@@ -3,8 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>sujaylmao</title>
+<title>sujaylmao music player</title>
 <style>
+@font-face {
+  font-family: 'CfCheerio';
+  src: url('https://sujaylol.github.io/CfCheerioDemoRegular-PVKKP.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   margin:0;
   height:100vh;
@@ -13,7 +20,7 @@ body {
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  font-family:Arial, sans-serif;
+  font-family:'CfCheerio', Arial, sans-serif;
   color:#fff;
   overflow:hidden;
 }
@@ -37,15 +44,22 @@ body {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:10px;
+  gap:5px;
   min-width:300px;
   max-width:600px;
   z-index:1;
 }
 
+.player h1 {
+  font-size:28px;
+  color:#8ed0f0;
+  margin:0;
+  text-align:center;
+}
+
 .title {
   color:#8ed0f0;
-  font-size:20px;
+  font-size:22px;
   text-align:center;
   width:100%;
   overflow:hidden;
@@ -76,7 +90,7 @@ body {
 
 /* Time display */
 .time {
-  font-family: monospace;
+  font-family: 'CfCheerio', monospace;
   font-size:14px;
   min-width:40px;
   text-align:center;
@@ -108,7 +122,6 @@ input[type=range] {
   cursor:pointer;
 }
 
-/* Hover glow directly around icon */
 .social img:hover {
   transform: scale(1.08);
   filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
@@ -120,6 +133,7 @@ input[type=range] {
 <div class="stars"></div>
 
 <div class="player">
+  <h1>sujaylmao</h1>
   <div class="title" id="songTitle">Loading...</div>
   <div class="controls">
     <button class="btn" id="prevBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/skip-to-start.png"/></button>
@@ -219,7 +233,6 @@ prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
 playPauseBtn.addEventListener('click', playPause);
 
-// load first song
 loadSong(index);
 </script>
 </body>
