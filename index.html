@@ -42,7 +42,7 @@
       z-index: 1;
     }
 
-    /* Social icons at bottom with edge-hugging glow */
+    /* Social icons at bottom with edge-hugging glow on hover */
     .socials {
       position: fixed;
       bottom: 20px;
@@ -57,17 +57,16 @@
       border-radius: 15%;
       cursor: pointer;
       transition: transform 0.3s ease;
-      filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); /* Default white glow */
     }
 
     .socials img:hover {
       transform: scale(1.1);
     }
 
-    /* Colored drop-shadow glow around actual logo */
-    .socials a:nth-child(1) img { filter: drop-shadow(0 0 15px #FF0000); } /* YouTube red */
-    .socials a:nth-child(2) img { filter: drop-shadow(0 0 15px #69C9D0); } /* TikTok cyan */
-    .socials a:nth-child(3) img { filter: drop-shadow(0 0 15px #7289DA); } /* Discord blurple */
+    /* Colored drop-shadow glow on hover */
+    .socials a:nth-child(1) img:hover { filter: drop-shadow(0 0 15px #FF0000); } /* YouTube red */
+    .socials a:nth-child(2) img:hover { filter: drop-shadow(0 0 15px #69C9D0); } /* TikTok cyan */
+    .socials a:nth-child(3) img:hover { filter: drop-shadow(0 0 15px #7289DA); } /* Discord blurple */
 
   </style>
 </head>
