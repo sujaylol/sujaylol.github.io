@@ -74,7 +74,7 @@
       z-index: 1;
     }
 
-    /* Social icons at bottom with constant glow */
+    /* Social icons at bottom with edge-hugging glow */
     .socials {
       position: fixed;
       bottom: 20px;
@@ -88,13 +88,17 @@
       height: 80px;
       border-radius: 15%;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(255,255,255,0.6); /* constant glow */
       transition: transform 0.3s ease;
     }
 
     .socials img:hover {
       transform: scale(1.1);
     }
+
+    /* Colored drop-shadow glow around actual logo */
+    .socials a:nth-child(1) img { filter: drop-shadow(0 0 15px #FF0000); } /* YouTube red */
+    .socials a:nth-child(2) img { filter: drop-shadow(0 0 15px #69C9D0); } /* TikTok cyan */
+    .socials a:nth-child(3) img { filter: drop-shadow(0 0 15px #7289DA); } /* Discord blurple */
 
   </style>
 </head>
