@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>sujaylmao</title>
   <style>
+    /* Page */
     body {
       margin: 0;
       height: 100vh;
@@ -18,69 +19,98 @@
       font-family: Arial, sans-serif;
     }
 
+    /* Starry background texture */
     .stars {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
       animation: moveStars 60s linear infinite;
       z-index: -1;
     }
-
     @keyframes moveStars {
       from { background-position: 0 0; }
-      to { background-position: 10000px 10000px; }
+      to   { background-position: 10000px 10000px; }
     }
 
+    /* Apple Music embed (higher on page) */
     .music-embed {
-      margin-bottom: auto;
+      margin-top: 30px;
       border-radius: 10px;
       overflow: hidden;
       max-width: 660px;
-      width: 100%;
-      margin-top: 20px;
+      width: 92%;
+      z-index: 1;
     }
 
+    /* Social icons container fixed to bottom */
     .socials {
-      display: flex;
-      gap: 40px;
-      margin-bottom: 40px;
-      position: absolute;
+      position: fixed;
       bottom: 20px;
+      display: flex;
+      gap: 36px;
+      z-index: 5;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      pointer-events: auto;
     }
 
+    /* Each icon */
+    .social {
+      display: inline-block;
+    }
     .social img {
-      width: 80px;
+      width: 80px;           /* uniform size */
       height: 80px;
       object-fit: contain;
       cursor: pointer;
-      transition: transform 0.3s ease, filter 0.3s ease;
+      transition: transform 0.25s ease, filter 0.25s ease;
+      /* no static shadow here — shadow appears on hover only */
+      filter: none;
+      background: transparent; /* helpful if browser tries to paint bg */
     }
 
+    /* Scale up + edge-hugging glow on hover using drop-shadow */
     .social img:hover {
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+      transform: scale(1.12);
+      filter: drop-shadow(0 0 18px rgba(255,255,255,0.9));
+    }
+
+    /* Responsive tweak so icons don't overlap on very small screens */
+    @media (max-width: 420px) {
+      .social img { width: 64px; height: 64px; }
+      .music-embed { width: 96%; }
     }
   </style>
 </head>
 <body>
   <div class="stars"></div>
 
-  <!-- Apple Music Embed -->
-  <div class="music-embed">
-    <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="450" style="width:100%; max-width:660px; overflow:hidden; border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/playlist/playlist-for-website/pl.u-aZb0N54I1lx30RP"></iframe>
+  <!-- Apple Music Embed (visible higher on page) -->
+  <div class="music-embed" aria-hidden="false">
+    <iframe
+      allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+      frameborder="0"
+      height="450"
+      style="width:100%; max-width:660px; overflow:hidden; border-radius:10px;"
+      sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+      src="https://embed.music.apple.com/us/playlist/playlist-for-website/pl.u-aZb0N54I1lx30RP"
+    ></iframe>
   </div>
 
-  <!-- Social icons -->
-  <div class="socials">
-    <a href="https://www.youtube.com/@sujaylmao" target="_blank" class="social">
-      <img src="https://img.icons8.com/color/100/youtube-play.png" alt="YouTube">
+  <!-- Social icons (bottom) -->
+  <div class="socials" role="navigation" aria-label="Social links">
+    <a class="social" href="https://www.youtube.com/@sujaylmao" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+      <img src="https://img.icons8.com/color/96/youtube-play.png" alt="YouTube">
     </a>
-    <a href="https://www.tiktok.com/@sujaylmao" target="_blank" class="social">
-      <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/TikTok_logo.svg" alt="TikTok" style="width:80px; height:80px;">
+
+    <!-- TikTok PNG (transparent background, normal PNG) -->
+    <a class="social" href="https://www.tiktok.com/@sujaylmao" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+      <img src="https://img.icons8.com/color/96/tiktok.png" alt="TikTok">
     </a>
-    <a href="https://discord.com/users/your-discord-id" target="_blank" class="social">
-      <img src="https://img.icons8.com/color/100/discord-logo.png" alt="Discord">
+
+    <a class="social" href="https://discord.com/users/your-discord-id" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+      <img src="https://img.icons8.com/color/96/discord-logo.png" alt="Discord">
     </a>
   </div>
 </body>
