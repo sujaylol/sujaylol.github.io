@@ -115,10 +115,8 @@ input[type=range] {
 <audio id="audioEl" preload="metadata"></audio>
 
 <script>
-// GitHub Pages base URL
 const baseURL = "https://sujaylol.github.io/songs/";
 
-// List all songs (just the filenames in your songs folder)
 const songs = [
   "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
   "Clockwork.mp3",
@@ -157,9 +155,8 @@ function loadSong(i){
   audio.src = baseURL + encodeURIComponent(filename);
   songTitle.textContent = filename;
   audio.load();
-  audio.play().catch(()=>{}); // autoplay may require user interaction
-  isPlaying = true;
-  playPauseBtn.textContent = "⏸️";
+  if(!isPlaying) return;
+  audio.play().catch(()=>{}); // browsers require interaction first
 }
 
 function playPause(){
@@ -174,8 +171,8 @@ function playPause(){
   }
 }
 
-function prevSong(){ loadSong(index-1); }
-function nextSong(){ loadSong(index+1); }
+function prevSong(){ loadSong(index-1); audio.play(); isPlaying=true; playPauseBtn.textContent="⏸️"; }
+function nextSong(){ loadSong(index+1); audio.play(); isPlaying=true; playPauseBtn.textContent="⏸️"; }
 
 audio.addEventListener('timeupdate', ()=>{
   currentTimeEl.textContent = formatTime(audio.currentTime);
@@ -194,7 +191,7 @@ prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
 playPauseBtn.addEventListener('click', playPause);
 
-// start first song
+// load first song
 loadSong(index);
 </script>
 
