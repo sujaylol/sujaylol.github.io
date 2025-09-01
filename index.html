@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sujay's Space</title>
+  <title>sujaylmao</title>
   <style>
-    /* Background stars effect */
+    /* Body & stars */
     body {
       margin: 0;
       height: 100vh;
@@ -19,7 +19,6 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Star animation */
     .stars {
       position: absolute;
       width: 100%;
@@ -52,7 +51,8 @@
     .social img {
       width: 80px;
       height: 80px;
-      border-radius: 20%;
+      object-fit: cover;
+      border-radius: 15%;
     }
 
     .social:hover {
@@ -69,54 +69,107 @@
       display: block;
     }
 
-    /* Click to play text */
-    .hint {
-      position: absolute;
-      bottom: 20px;
-      font-size: 14px;
-      opacity: 0.7;
+    /* Audio player */
+    .audio-player {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(20,20,20,0.8);
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    input[type=range] {
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="stars"></div>
 
-  <h1>Welcome to My Space 🌌</h1>
-
   <!-- Socials -->
   <div class="socials">
     <div class="social" onclick="toggleUsername(this)">
-      <img src="youtube.png" alt="YouTube">
+      <img src="https://img.icons8.com/ios-filled/100/ffffff/youtube-play.png" alt="YouTube">
       <div class="username">sujaylmao</div>
     </div>
     <div class="social" onclick="toggleUsername(this)">
-      <img src="tiktok.png" alt="TikTok">
+      <img src="https://img.icons8.com/ios-filled/100/ffffff/tiktok.png" alt="TikTok">
       <div class="username">@sujaylmao</div>
     </div>
     <div class="social" onclick="toggleUsername(this)">
-      <img src="discord.png" alt="Discord">
+      <img src="https://img.icons8.com/ios-filled/100/ffffff/discord-logo.png" alt="Discord">
       <div class="username">sjtllix</div>
     </div>
   </div>
 
-  <p class="hint">Click anywhere to play music 🎶</p>
+  <!-- Audio player -->
+  <div class="audio-player">
+    <button id="playPause">▶️</button>
+    <span id="currentTime">0:00</span>
+    <input type="range" id="progress" value="0" min="0" step="1">
+    <span id="duration">0:00</span>
+    <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+  </div>
 
-  <!-- Music embed -->
-  <iframe id="music" src="" style="display:none;"></iframe>
+  <audio id="audio" src="https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/92/ab/ff/92abff07-5be4-0f03-77b5-31b8d2ee9f3f/mzaf_11943176415207670788.plus.aac.p.m4a"></audio>
 
   <script>
-    // Play Apple Music playlist on first click
-    document.body.addEventListener("click", () => {
-      const musicFrame = document.getElementById("music");
-      if (!musicFrame.src) {
-        musicFrame.src = "https://embed.music.apple.com/us/playlist/playlist-for-website/pl.u-aZb0N54I1lx30RP";
-        musicFrame.style.display = "none"; // stays hidden but plays
-      }
-    }, { once: true });
-
-    // Show username when clicking on social
+    // Toggle social username
     function toggleUsername(el) {
       el.classList.toggle("show-username");
+    }
+
+    // Audio player logic
+    const audio = document.getElementById("audio");
+    const playPause = document.getElementById("playPause");
+    const progress = document.getElementById("progress");
+    const currentTime = document.getElementById("currentTime");
+    const duration = document.getElementById("duration");
+    const volume = document.getElementById("volume");
+
+    // Play / Pause
+    playPause.addEventListener("click", () => {
+      if(audio.paused){
+        audio.play();
+        playPause.textContent = "⏸️";
+      } else {
+        audio.pause();
+        playPause.textContent = "▶️";
+      }
+    });
+
+    // Update duration
+    audio.addEventListener("loadedmetadata", () => {
+      progress.max = Math.floor(audio.duration);
+      duration.textContent = formatTime(audio.duration);
+    });
+
+    // Update progress
+    audio.addEventListener("timeupdate", () => {
+      progress.value = Math.floor(audio.currentTime);
+      currentTime.textContent = formatTime(audio.currentTime);
+    });
+
+    // Seek audio
+    progress.addEventListener("input", () => {
+      audio.currentTime = progress.value;
+    });
+
+    // Volume
+    volume.addEventListener("input", () => {
+      audio.volume = volume.value;
+    });
+
+    // Format seconds to mm:ss
+    function formatTime(sec){
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60).toString().padStart(2,"0");
+      return `${m}:${s}`;
     }
   </script>
 </body>
