@@ -1,81 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>sujaylmao — player</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sujaylmao Music Player</title>
 <style>
-:root {
-  --bg: #000;
-  --panel: #111;
-  --accent: #8ed0f0; /* light blue for song title */
-  --text: #ddd;
-}
-html, body { margin:0; height:100%; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
+  margin:0;
+  height:100vh;
+  background:#000;
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:center;
-  gap:24px;
-  overflow:hidden;
+  align-items:center;
+  font-family:Arial, sans-serif;
+  color:#fff;
 }
 
-/* star background */
-.stars{
-  position:fixed; inset:0; z-index:-2;
-  background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
-  animation: moveStars 60s linear infinite;
-  opacity:0.5;
-}
-@keyframes moveStars{ from{background-position:0 0} to{background-position:10000px 10000px} }
-
-/* Player panel */
 .player {
-  background: var(--panel);
+  background:#111;
+  padding:20px;
   border-radius:10px;
-  padding:14px 20px;
-  width:min(720px, 90%);
   display:flex;
   flex-direction:column;
-  gap:8px;
   align-items:center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+  gap:10px;
+  min-width:300px;
+  max-width:600px;
 }
 
-/* Song title */
 .title {
-  color: var(--accent);
+  color:#8ed0f0;
   font-size:20px;
-  font-weight:600;
   text-align:center;
   width:100%;
-  white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
-/* Controls row */
 .controls {
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
+  width:100%;
   justify-content:center;
 }
 
 .btn {
-  background: transparent;
+  background:transparent;
   border:1px solid rgba(255,255,255,0.2);
-  color: var(--text);
-  padding:6px 10px;
+  color:#fff;
+  padding:6px 12px;
   border-radius:6px;
   cursor:pointer;
   font-weight:600;
-  min-width:50px;
-  text-align:center;
 }
 .btn:active { transform:translateY(1px); }
 
@@ -87,70 +66,57 @@ body {
   color:#ccc;
 }
 
-/* Socials bottom */
+input[type=range] {
+  flex:1;
+}
+
 .socials {
   position:fixed;
   bottom:20px;
   display:flex;
-  gap:32px;
-  width:100%;
+  gap:30px;
   justify-content:center;
-}
-.social img{
-  width:72px; height:72px;
-  object-fit:contain;
-  transition:transform .18s ease, filter .18s ease;
-}
-.social img:hover{
-  transform:scale(1.08);
-  filter: drop-shadow(0 0 14px rgba(255,255,255,0.9));
+  width:100%;
 }
 
-/* Click to start overlay */
-.tap-to-play {
-  position:fixed; inset:0; z-index:30;
-  display:none;
-  align-items:center; justify-content:center;
-  background: rgba(0,0,0,0.6);
+.social img {
+  width:72px; height:72px;
+  object-fit:contain;
+  transition: transform .18s ease, filter .18s ease;
   cursor:pointer;
-  color:#fff;
-  font-size:14px;
-  text-align:center;
-  padding:20px;
+}
+
+.social img:hover {
+  transform:scale(1.08);
+  filter: drop-shadow(0 0 14px rgba(255,255,255,0.9));
 }
 </style>
 </head>
 <body>
-<div class="stars"></div>
 
 <div class="player">
   <div class="title" id="songTitle">Loading...</div>
   <div class="controls">
-    <button class="btn" id="prevBtn">skip</button>
-    <div class="time" id="currentTime">0:00</div>
-    <div class="time" id="durationTime">0:00</div>
-    <button class="btn" id="nextBtn">next</button>
+    <button class="btn" id="prevBtn">⏮</button>
+    <button class="btn" id="playPauseBtn">▶️</button>
+    <button class="btn" id="nextBtn">⏭</button>
+    <span class="time" id="currentTime">0:00</span>
+    <input type="range" id="progress" value="0" min="0" step="1">
+    <span class="time" id="duration">0:00</span>
   </div>
+</div>
+
+<div class="socials">
+  <a href="https://www.youtube.com/@sujaylmao" target="_blank"><img src="https://img.icons8.com/color/96/youtube-play.png"></a>
+  <a href="https://www.tiktok.com/@sujaylmao" target="_blank"><img src="https://img.icons8.com/color/96/tiktok.png"></a>
+  <a href="https://discord.com/users/your-discord-id" target="_blank"><img src="https://img.icons8.com/color/96/discord-logo.png"></a>
 </div>
 
 <audio id="audioEl" preload="metadata"></audio>
 
-<div class="socials">
-  <a class="social" href="https://www.youtube.com/@sujaylmao" target="_blank">
-    <img src="https://img.icons8.com/color/96/youtube-play.png" alt="YouTube">
-  </a>
-  <a class="social" href="https://www.tiktok.com/@sujaylmao" target="_blank">
-    <img src="https://img.icons8.com/color/96/tiktok.png" alt="TikTok">
-  </a>
-  <a class="social" href="https://discord.com/users/your-discord-id" target="_blank">
-    <img src="https://img.icons8.com/color/96/discord-logo.png" alt="Discord">
-  </a>
-</div>
-
-<div class="tap-to-play" id="tapOverlay">Click anywhere to start music</div>
-
 <script>
-const baseURL = "https://raw.githubusercontent.com/sujaylol/music-site/main/";
+const baseURL = "https://raw.githubusercontent.com/sujaylol/music-site/main/songs/";
+
 const songs = [
   "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
   "Clockwork.mp3",
@@ -167,12 +133,14 @@ const songs = [
 const audio = document.getElementById('audioEl');
 const songTitle = document.getElementById('songTitle');
 const currentTimeEl = document.getElementById('currentTime');
-const durationEl = document.getElementById('durationTime');
+const durationEl = document.getElementById('duration');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
-const tapOverlay = document.getElementById('tapOverlay');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const progress = document.getElementById('progress');
 
 let index = 0;
+let isPlaying = false;
 
 function formatTime(t){
   if(!isFinite(t)) return "0:00";
@@ -187,28 +155,46 @@ function loadSong(i){
   audio.src = baseURL + encodeURIComponent(filename);
   songTitle.textContent = filename;
   audio.load();
-  attemptPlay();
+  audio.play();
+  isPlaying = true;
+  playPauseBtn.textContent = "⏸️";
 }
 
-function attemptPlay(){
-  audio.play().then(()=>{ tapOverlay.style.display='none'; })
-  .catch(()=>{ tapOverlay.style.display='flex'; });
+function playPause(){
+  if(isPlaying){
+    audio.pause();
+    isPlaying=false;
+    playPauseBtn.textContent="▶️";
+  } else {
+    audio.play();
+    isPlaying=true;
+    playPauseBtn.textContent="⏸️";
+  }
 }
-
-audio.addEventListener('timeupdate', ()=>{ currentTimeEl.textContent = formatTime(audio.currentTime); });
-audio.addEventListener('loadedmetadata', ()=>{ durationEl.textContent = formatTime(audio.duration); });
-audio.addEventListener('ended', ()=>{ nextSong(); });
 
 function prevSong(){ loadSong(index-1); }
 function nextSong(){ loadSong(index+1); }
 
+audio.addEventListener('timeupdate', ()=>{
+  currentTimeEl.textContent = formatTime(audio.currentTime);
+  progress.value = Math.floor(audio.currentTime);
+});
+
+audio.addEventListener('loadedmetadata', ()=>{
+  durationEl.textContent = formatTime(audio.duration);
+  progress.max = Math.floor(audio.duration);
+});
+
+audio.addEventListener('ended', nextSong);
+
+progress.addEventListener('input', ()=>{ audio.currentTime = progress.value; });
 prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
+playPauseBtn.addEventListener('click', playPause);
 
-tapOverlay.addEventListener('click', ()=>{ tapOverlay.style.display='none'; audio.play().catch(()=>{}); });
-document.addEventListener('click', function startOnFirstClick(){ audio.play().catch(()=>{}); document.removeEventListener('click', startOnFirstClick); });
-
+// start first song
 loadSong(index);
 </script>
+
 </body>
 </html>
