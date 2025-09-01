@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>sujaylmao music player</title>
+<title>sujaylmao</title>
 <style>
 @font-face {
   font-family: 'CfCheerio';
@@ -255,7 +255,7 @@ if(/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigato
   document.body.classList.add('mobile');
 }
 
-// MUSIC PLAYER
+// SONG LIST
 const baseURL = "https://sujaylol.github.io/songs/";
 const songs = [
   "temporex - numbers  lyrics.mp3",
@@ -284,6 +284,7 @@ const clickOverlay = document.getElementById('clickOverlay');
 let index = 0;
 let isPlaying = false;
 
+// FORMAT TIME
 function formatTime(t){
   if(!isFinite(t)) return "0:00";
   const m = Math.floor(t/60);
@@ -291,10 +292,14 @@ function formatTime(t){
   return `${m}:${s}`;
 }
 
+// DISPLAY CLEAN TITLE
 function displayTitle(filename){
-  return filename.replace(/\.mp3$/i,'');
+  let title = filename.replace(/\.mp3$/i,'');        // remove .mp3
+  title = title.replace(/\s*\(.*?\)/g,'');           // remove parentheses and contents
+  return title.trim();
 }
 
+// LOAD SONG
 function loadSong(i){
   index = (i + songs.length) % songs.length;
   const filename = songs[index];
@@ -303,6 +308,7 @@ function loadSong(i){
   audio.load();
 }
 
+// PLAY/PAUSE
 function playPause(){
   if(isPlaying){
     audio.pause();
@@ -315,9 +321,11 @@ function playPause(){
   }
 }
 
+// NEXT/PREV SONG
 function prevSong(){ loadSong(index-1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
 function nextSong(){ loadSong(index+1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
 
+// UPDATE TIME AND PROGRESS
 audio.addEventListener('timeupdate', ()=>{
   currentTimeEl.textContent = formatTime(audio.currentTime);
   progress.value = Math.floor(audio.currentTime);
@@ -330,22 +338,23 @@ audio.addEventListener('loadedmetadata', ()=>{
 
 audio.addEventListener('ended', nextSong);
 
+// PROGRESS SLIDER
 progress.addEventListener('input', ()=>{ audio.currentTime = progress.value; });
 prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
 playPauseBtn.addEventListener('click', playPause);
 
-// Hide volume functionality on mobile
+// VOLUME
 volumeSlider.addEventListener('input', ()=>{
   if(!document.body.classList.contains('mobile')){
     audio.volume = volumeSlider.value;
   }
 });
 
-// Load song metadata immediately
+// LOAD FIRST SONG
 loadSong(index);
 
-// Click overlay to start playback
+// CLICK OVERLAY
 clickOverlay.addEventListener('click', ()=>{
   clickOverlay.style.display='none';
   audio.play().catch(()=>{});
