@@ -115,8 +115,10 @@ input[type=range] {
 <audio id="audioEl" preload="metadata"></audio>
 
 <script>
-const baseURL = "https://raw.githubusercontent.com/sujaylol/music-site/main/songs/";
+// GitHub Pages base URL
+const baseURL = "https://sujaylol.github.io/songs/";
 
+// List all songs (just the filenames in your songs folder)
 const songs = [
   "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
   "Clockwork.mp3",
@@ -155,7 +157,7 @@ function loadSong(i){
   audio.src = baseURL + encodeURIComponent(filename);
   songTitle.textContent = filename;
   audio.load();
-  audio.play();
+  audio.play().catch(()=>{}); // autoplay may require user interaction
   isPlaying = true;
   playPauseBtn.textContent = "⏸️";
 }
