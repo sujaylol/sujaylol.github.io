@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sujay's Space</title>
+  <style>
+    /* Background stars effect */
+    body {
+      margin: 0;
+      height: 100vh;
+      background: black;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Star animation */
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
+      animation: moveStars 60s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes moveStars {
+      from { background-position: 0 0; }
+      to { background-position: 10000px 10000px; }
+    }
+
+    /* Social icons */
+    .socials {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .social {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .social img {
+      width: 80px;
+      height: 80px;
+      border-radius: 20%;
+    }
+
+    .social:hover {
+      transform: scale(1.1);
+    }
+
+    .username {
+      display: none;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
+    .social.show-username .username {
+      display: block;
+    }
+
+    /* Click to play text */
+    .hint {
+      position: absolute;
+      bottom: 20px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+
+  <h1>Welcome to My Space 🌌</h1>
+
+  <!-- Socials -->
+  <div class="socials">
+    <div class="social" onclick="toggleUsername(this)">
+      <img src="youtube.png" alt="YouTube">
+      <div class="username">sujaylmao</div>
+    </div>
+    <div class="social" onclick="toggleUsername(this)">
+      <img src="tiktok.png" alt="TikTok">
+      <div class="username">@sujaylmao</div>
+    </div>
+    <div class="social" onclick="toggleUsername(this)">
+      <img src="discord.png" alt="Discord">
+      <div class="username">sjtllix</div>
+    </div>
+  </div>
+
+  <p class="hint">Click anywhere to play music 🎶</p>
+
+  <!-- Music embed -->
+  <iframe id="music" src="" style="display:none;"></iframe>
+
+  <script>
+    // Play Apple Music playlist on first click
+    document.body.addEventListener("click", () => {
+      const musicFrame = document.getElementById("music");
+      if (!musicFrame.src) {
+        musicFrame.src = "https://embed.music.apple.com/us/playlist/playlist-for-website/pl.u-aZb0N54I1lx30RP";
+        musicFrame.style.display = "none"; // stays hidden but plays
+      }
+    }, { once: true });
+
+    // Show username when clicking on social
+    function toggleUsername(el) {
+      el.classList.toggle("show-username");
+    }
+  </script>
+</body>
+</html>
