@@ -42,33 +42,33 @@ body {
   flex-direction:column;
   align-items:center;
   gap:5px;
-  min-width:280px;
-  max-width:450px;
+  min-width:300px;
+  max-width:500px;
   z-index:1;
 }
 
 .player h1 {
-  font-size:22px;
+  font-size:24px;
   color:#8ed0f0;
   margin:0;
-  text-shadow: 0 0 8px #8ed0f0;
+  text-shadow:0 0 5px #8ed0f0;
 }
 
 .title {
-  font-size:16px;
+  font-size:18px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
   width:100%;
   text-align:center;
   color:#8ed0f0;
-  text-shadow: 0 0 8px #8ed0f0;
+  text-shadow:0 0 5px #8ed0f0;
 }
 
 .controls {
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:5px;
   width:100%;
   justify-content:center;
   position:relative;
@@ -82,8 +82,8 @@ body {
 }
 
 .btn img {
-  width:26px;
-  height:26px;
+  width:28px;
+  height:28px;
 }
 
 .time {
@@ -92,8 +92,7 @@ body {
   min-width:30px;
   text-align:center;
   color:#ccc;
-  text-shadow: 0 0 5px #ccc;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  text-shadow:0 0 3px #fff;
 }
 
 .timeline-wrapper {
@@ -111,16 +110,14 @@ body {
 }
 
 .volume-container {
-  display: flex;
-  align-items: center;
+  display:flex;
+  align-items:center;
   position:relative;
-  margin-left:10px;
-  overflow:visible;
 }
 
 #volumeIcon {
-  width:26px;
-  height:26px;
+  width:28px;
+  height:28px;
   cursor:pointer;
   transition: transform 0.2s ease;
 }
@@ -130,28 +127,10 @@ body {
 }
 
 #volumeSlider {
-  width:0;
+  width:100px;
   height:4px;
-  margin-right:0;
-  transition: width 0.3s ease;
-}
-
-/* Expand volume on hover and hide timeline */
-.volume-container:hover #volumeSlider {
-  width:150px;
-  margin-right:10px;
-}
-
-.volume-container:hover ~ .timeline-wrapper {
-  opacity:0;
-  visibility:hidden;
-}
-
-/* Hide volume on mobile */
-@media (max-width: 768px) {
-  .volume-container {
-    display: none !important;
-  }
+  background:#000;
+  margin-left:5px;
 }
 
 /* Socials at bottom */
@@ -159,15 +138,15 @@ body {
   position:fixed;
   bottom:20px;
   display:flex;
-  gap:25px;
+  gap:30px;
   justify-content:center;
   width:100%;
   z-index:1;
 }
 
 .social img {
-  width:64px;
-  height:64px;
+  width:72px;
+  height:72px;
   object-fit:contain;
   transition: transform .2s ease, filter .2s ease;
   cursor:pointer;
@@ -177,15 +156,72 @@ body {
   transform: scale(1.08);
   filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
 }
+
+/* Click overlay */
+#clickOverlay {
+  position:absolute;
+  inset:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  font-family:'CfCheerio', Arial, sans-serif;
+  font-size:32px;
+  cursor:pointer;
+  color:#fff;
+  user-select:none;
+}
+
+/* MOBILE STYLES */
+body.mobile .player {
+  min-width:220px;
+  max-width:350px;
+  gap:4px;
+}
+
+body.mobile .player h1 {
+  font-size:18px;
+}
+
+body.mobile .title {
+  font-size:14px;
+}
+
+body.mobile .btn img {
+  width:22px;
+  height:22px;
+}
+
+body.mobile .time {
+  font-size:10px;
+  min-width:25px;
+}
+
+/* Hide the entire volume container on mobile */
+body.mobile .volume-container {
+  display:none;
+}
+
+body.mobile .social img {
+  width:50px;
+  height:50px;
+}
+
+body.mobile #clickOverlay {
+  font-size:24px;
+}
 </style>
 </head>
 <body>
 
 <div class="stars"></div>
 
+<div id="clickOverlay">click</div>
+
 <div class="player">
   <h1>sujaylmao</h1>
-  <div class="title" id="songTitle">Click</div>
+  <div class="title" id="songTitle">Loading...</div>
   <div class="controls">
     <button class="btn" id="prevBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/skip-to-start.png"/></button>
     <button class="btn" id="playPauseBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/play.png"/></button>
@@ -214,9 +250,15 @@ body {
 <audio id="audioEl" preload="metadata"></audio>
 
 <script>
+// DEVICE DETECTION
+if(/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+  document.body.classList.add('mobile');
+}
+
+// MUSIC PLAYER
 const baseURL = "https://sujaylol.github.io/songs/";
 const songs = [
-  "temporex - numbers lyrics.mp3",
+  "temporex - numbers  lyrics.mp3",
   "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
   "Clockwork.mp3",
   "Laufey - From The Start (Official Audio).mp3",
@@ -237,6 +279,7 @@ const nextBtn = document.getElementById('nextBtn');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const progress = document.getElementById('progress');
 const volumeSlider = document.getElementById('volumeSlider');
+const clickOverlay = document.getElementById('clickOverlay');
 
 let index = 0;
 let isPlaying = false;
@@ -258,9 +301,6 @@ function loadSong(i){
   audio.src = baseURL + encodeURIComponent(filename);
   songTitle.textContent = displayTitle(filename);
   audio.load();
-  if(isPlaying) audio.play().catch(()=>{});
-  playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/play.png";
-  isPlaying=false;
 }
 
 function playPause(){
@@ -275,8 +315,8 @@ function playPause(){
   }
 }
 
-function prevSong(){ loadSong(index-1); playPause(); }
-function nextSong(){ loadSong(index+1); playPause(); }
+function prevSong(){ loadSong(index-1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
+function nextSong(){ loadSong(index+1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
 
 audio.addEventListener('timeupdate', ()=>{
   currentTimeEl.textContent = formatTime(audio.currentTime);
@@ -294,14 +334,23 @@ progress.addEventListener('input', ()=>{ audio.currentTime = progress.value; });
 prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
 playPauseBtn.addEventListener('click', playPause);
-volumeSlider.addEventListener('input', ()=>{ audio.volume = volumeSlider.value; });
 
-// Wait for first click to start music (autoplay policies)
-document.addEventListener('click', function firstClick(){
+// Hide volume functionality on mobile
+volumeSlider.addEventListener('input', ()=>{
+  if(!document.body.classList.contains('mobile')){
+    audio.volume = volumeSlider.value;
+  }
+});
+
+// Load song metadata immediately
+loadSong(index);
+
+// Click overlay to start playback
+clickOverlay.addEventListener('click', ()=>{
+  clickOverlay.style.display='none';
   audio.play().catch(()=>{});
-  isPlaying=true;
+  isPlaying = true;
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
-  document.removeEventListener('click', firstClick);
 });
 </script>
 
