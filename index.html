@@ -51,7 +51,7 @@ body {
   font-size:22px;
   color:#8ed0f0;
   margin:0;
-  text-shadow: 0 0 5px #8ed0f0;
+  text-shadow: 0 0 8px #8ed0f0;
 }
 
 .title {
@@ -62,13 +62,13 @@ body {
   width:100%;
   text-align:center;
   color:#8ed0f0;
-  text-shadow: 0 0 4px #8ed0f0;
+  text-shadow: 0 0 8px #8ed0f0;
 }
 
 .controls {
   display:flex;
   align-items:center;
-  gap:5px;
+  gap:6px;
   width:100%;
   justify-content:center;
   position:relative;
@@ -82,8 +82,8 @@ body {
 }
 
 .btn img {
-  width:28px;
-  height:28px;
+  width:26px;
+  height:26px;
 }
 
 .time {
@@ -92,8 +92,8 @@ body {
   min-width:30px;
   text-align:center;
   color:#ccc;
+  text-shadow: 0 0 5px #ccc;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  text-shadow: 0 0 3px #fff;
 }
 
 .timeline-wrapper {
@@ -107,21 +107,20 @@ body {
 #progress {
   flex:1;
   height:4px;
-  background:#111;
-  accent-color:#8ed0f0;
+  background:#000;
 }
 
 .volume-container {
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   position:relative;
-  margin-left:5px;
+  margin-left:10px;
   overflow:visible;
 }
 
 #volumeIcon {
-  width:28px;
-  height:28px;
+  width:26px;
+  height:26px;
   cursor:pointer;
   transition: transform 0.2s ease;
 }
@@ -133,53 +132,42 @@ body {
 #volumeSlider {
   width:0;
   height:4px;
-  margin-left:5px;
+  margin-right:0;
   transition: width 0.3s ease;
-  background:#111;
-  accent-color:#8ed0f0;
 }
 
-/* Expand volume on hover and hide timeline on desktop */
-@media screen and (min-width:601px){
-  .volume-container:hover #volumeSlider {
-    width:120px;
-    margin-left:5px;
-  }
-
-  .volume-container:hover ~ .timeline-wrapper {
-    opacity:0;
-    visibility:hidden;
-  }
+/* Expand volume on hover and hide timeline */
+.volume-container:hover #volumeSlider {
+  width:150px;
+  margin-right:10px;
 }
 
-/* Mobile fix: always show volume and timeline stays */
-@media screen and (max-width:600px){
-  #volumeSlider {
-    width:80px !important;
-  }
-  .volume-container:hover ~ .timeline-wrapper {
-    opacity:1 !important;
-    visibility:visible !important;
-  }
-  .player {
-    min-width:90%;
+.volume-container:hover ~ .timeline-wrapper {
+  opacity:0;
+  visibility:hidden;
+}
+
+/* Hide volume on mobile */
+@media (max-width: 768px) {
+  .volume-container {
+    display: none !important;
   }
 }
 
 /* Socials at bottom */
 .socials {
   position:fixed;
-  bottom:15px;
+  bottom:20px;
   display:flex;
-  gap:20px;
+  gap:25px;
   justify-content:center;
   width:100%;
   z-index:1;
 }
 
 .social img {
-  width:60px;
-  height:60px;
+  width:64px;
+  height:64px;
   object-fit:contain;
   transition: transform .2s ease, filter .2s ease;
   cursor:pointer;
@@ -197,7 +185,7 @@ body {
 
 <div class="player">
   <h1>sujaylmao</h1>
-  <div class="title" id="songTitle">Loading...</div>
+  <div class="title" id="songTitle">Click</div>
   <div class="controls">
     <button class="btn" id="prevBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/skip-to-start.png"/></button>
     <button class="btn" id="playPauseBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/play.png"/></button>
@@ -211,7 +199,7 @@ body {
     </div>
 
     <div class="volume-container">
-      <img src="https://img.icons8.com/ios-filled/50/ffffff/speaker.png" id="volumeIcon">
+      <img src="https://img.icons8.com/color/48/000000/medium-volume.png" id="volumeIcon">
       <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
     </div>
   </div>
@@ -228,7 +216,7 @@ body {
 <script>
 const baseURL = "https://sujaylol.github.io/songs/";
 const songs = [
-  "temporex - numbers  lyrics.mp3",
+  "temporex - numbers lyrics.mp3",
   "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
   "Clockwork.mp3",
   "Laufey - From The Start (Official Audio).mp3",
@@ -271,6 +259,8 @@ function loadSong(i){
   songTitle.textContent = displayTitle(filename);
   audio.load();
   if(isPlaying) audio.play().catch(()=>{});
+  playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/play.png";
+  isPlaying=false;
 }
 
 function playPause(){
@@ -285,8 +275,8 @@ function playPause(){
   }
 }
 
-function prevSong(){ loadSong(index-1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
-function nextSong(){ loadSong(index+1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
+function prevSong(){ loadSong(index-1); playPause(); }
+function nextSong(){ loadSong(index+1); playPause(); }
 
 audio.addEventListener('timeupdate', ()=>{
   currentTimeEl.textContent = formatTime(audio.currentTime);
@@ -306,12 +296,12 @@ nextBtn.addEventListener('click', nextSong);
 playPauseBtn.addEventListener('click', playPause);
 volumeSlider.addEventListener('input', ()=>{ audio.volume = volumeSlider.value; });
 
-// Auto play on open
-window.addEventListener('load', ()=>{
-  loadSong(index);
+// Wait for first click to start music (autoplay policies)
+document.addEventListener('click', function firstClick(){
   audio.play().catch(()=>{});
-  playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/play.png"; // play icon default
-  isPlaying=false;
+  isPlaying=true;
+  playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
+  document.removeEventListener('click', firstClick);
 });
 </script>
 
