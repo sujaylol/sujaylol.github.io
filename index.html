@@ -41,27 +41,28 @@ body {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:3px;
-  min-width:150px;
-  max-width:200px;
+  gap:5px;
+  min-width:300px;
+  max-width:500px;
   z-index:1;
 }
 
 .player h1 {
-  font-size:14px;
+  font-size:24px;
   color:#8ed0f0;
   margin:0;
-  text-align:center;
+  text-shadow:0 0 5px #8ed0f0;
 }
 
 .title {
-  color:#8ed0f0;
-  font-size:12px;
-  text-align:center;
-  width:100%;
+  font-size:18px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  width:100%;
+  text-align:center;
+  color:#8ed0f0;
+  text-shadow:0 0 5px #8ed0f0;
 }
 
 .controls {
@@ -70,6 +71,7 @@ body {
   gap:5px;
   width:100%;
   justify-content:center;
+  position:relative;
 }
 
 .btn {
@@ -80,53 +82,71 @@ body {
 }
 
 .btn img {
-  width:18px;
-  height:18px;
+  width:28px;
+  height:28px;
 }
 
 .time {
   font-family: 'CfCheerio', monospace;
-  font-size:10px;
+  font-size:12px;
   min-width:30px;
   text-align:center;
   color:#ccc;
+  text-shadow:0 0 3px #fff;
 }
 
-input[type=range] {
+.timeline-wrapper {
   flex:1;
-  background: rgba(255,255,255,0.2);
-  cursor:pointer;
-  height:5px;
-}
-
-/* Volume */
-.volume-container {
   display:flex;
   align-items:center;
   gap:5px;
-  width:100%;
-  margin-top:2px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.volume-container input[type=range] {
+#progress {
   flex:1;
-  height:5px;
+  height:4px;
+  background:#000;
 }
 
-/* Socials */
+.volume-container {
+  display:flex;
+  align-items:center;
+  position:relative;
+}
+
+#volumeIcon {
+  width:28px;
+  height:28px;
+  cursor:pointer;
+  transition: transform 0.2s ease;
+}
+
+#volumeIcon:hover {
+  transform:scale(1.1);
+}
+
+#volumeSlider {
+  width:100px;
+  height:4px;
+  background:#000;
+  margin-left:5px;
+}
+
+/* Socials at bottom */
 .socials {
   position:fixed;
-  bottom:10px;
+  bottom:20px;
   display:flex;
-  gap:15px;
+  gap:30px;
   justify-content:center;
   width:100%;
   z-index:1;
 }
 
 .social img {
-  width:36px;
-  height:36px;
+  width:72px;
+  height:72px;
   object-fit:contain;
   transition: transform .2s ease, filter .2s ease;
   cursor:pointer;
@@ -134,13 +154,31 @@ input[type=range] {
 
 .social img:hover {
   transform: scale(1.08);
-  filter: drop-shadow(0 0 12px rgba(255,255,255,0.9));
+  filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
+}
+
+/* Click overlay */
+#clickOverlay {
+  position:absolute;
+  inset:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  font-family:'CfCheerio', Arial, sans-serif;
+  font-size:32px;
+  cursor:pointer;
+  color:#fff;
+  user-select:none;
 }
 </style>
 </head>
 <body>
 
 <div class="stars"></div>
+
+<div id="clickOverlay">click</div>
 
 <div class="player">
   <h1>sujaylmao</h1>
@@ -149,13 +187,18 @@ input[type=range] {
     <button class="btn" id="prevBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/skip-to-start.png"/></button>
     <button class="btn" id="playPauseBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/play.png"/></button>
     <button class="btn" id="nextBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/end.png"/></button>
+
     <span class="time" id="currentTime">0:00</span>
-    <input type="range" id="progress" value="0" min="0" step="1">
-    <span class="time" id="duration">0:00</span>
-  </div>
-  <div class="volume-container">
-    <label for="volumeSlider">🔊</label>
-    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+
+    <div class="timeline-wrapper">
+      <input type="range" id="progress" value="0" min="0" step="1">
+      <span class="time" id="duration">0:00</span>
+    </div>
+
+    <div class="volume-container">
+      <img src="https://img.icons8.com/color/48/000000/medium-volume.png" id="volumeIcon">
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+    </div>
   </div>
 </div>
 
@@ -169,7 +212,6 @@ input[type=range] {
 
 <script>
 const baseURL = "https://sujaylol.github.io/songs/";
-
 const songs = [
   "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
   "Clockwork.mp3",
@@ -192,6 +234,7 @@ const nextBtn = document.getElementById('nextBtn');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const progress = document.getElementById('progress');
 const volumeSlider = document.getElementById('volumeSlider');
+const clickOverlay = document.getElementById('clickOverlay');
 
 let index = 0;
 let isPlaying = false;
@@ -213,7 +256,6 @@ function loadSong(i){
   audio.src = baseURL + encodeURIComponent(filename);
   songTitle.textContent = displayTitle(filename);
   audio.load();
-  if(isPlaying) audio.play().catch(()=>{});
 }
 
 function playPause(){
@@ -247,14 +289,19 @@ progress.addEventListener('input', ()=>{ audio.currentTime = progress.value; });
 prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
 playPauseBtn.addEventListener('click', playPause);
-
-// Volume
 volumeSlider.addEventListener('input', ()=>{ audio.volume = volumeSlider.value; });
 
-// Load first song & autoplay
+// Load song metadata immediately
 loadSong(index);
-audio.autoplay = true;
-audio.play().catch(()=>{});
+
+// Click overlay to start playback
+clickOverlay.addEventListener('click', ()=>{
+  clickOverlay.style.display='none';
+  audio.play().catch(()=>{});
+  isPlaying = true;
+  playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
+});
 </script>
+
 </body>
 </html>
