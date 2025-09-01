@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>sujaylmao</title>
   <style>
-    /* Page */
     body {
       margin: 0;
       height: 100vh;
@@ -19,7 +18,6 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Starry background texture */
     .stars {
       position: absolute;
       inset: 0;
@@ -32,17 +30,33 @@
       to   { background-position: 10000px 10000px; }
     }
 
-    /* Apple Music embed (higher on page) */
-    .music-embed {
-      margin-top: 30px;
+    .music-player {
+      margin-top: 20px;
+      z-index: 2;
+      text-align: center;
+    }
+    audio {
+      width: 320px;
+      outline: none;
       border-radius: 10px;
-      overflow: hidden;
-      max-width: 660px;
-      width: 92%;
-      z-index: 1;
+    }
+    .controls {
+      margin-top: 10px;
+    }
+    .controls button {
+      background: #222;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      margin: 0 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .controls button:hover {
+      background: #444;
     }
 
-    /* Social icons container fixed to bottom */
     .socials {
       position: fixed;
       bottom: 20px;
@@ -52,66 +66,98 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      pointer-events: auto;
     }
 
-    /* Each icon */
-    .social {
-      display: inline-block;
-    }
     .social img {
-      width: 80px;           /* uniform size */
+      width: 80px;
       height: 80px;
       object-fit: contain;
       cursor: pointer;
       transition: transform 0.25s ease, filter 0.25s ease;
-      /* no static shadow here — shadow appears on hover only */
       filter: none;
-      background: transparent; /* helpful if browser tries to paint bg */
+      background: transparent;
     }
 
-    /* Scale up + edge-hugging glow on hover using drop-shadow */
     .social img:hover {
       transform: scale(1.12);
       filter: drop-shadow(0 0 18px rgba(255,255,255,0.9));
     }
 
-    /* Responsive tweak so icons don't overlap on very small screens */
     @media (max-width: 420px) {
       .social img { width: 64px; height: 64px; }
-      .music-embed { width: 96%; }
+      audio { width: 240px; }
     }
   </style>
 </head>
 <body>
   <div class="stars"></div>
 
-  <!-- Apple Music Embed (visible higher on page) -->
-  <div class="music-embed" aria-hidden="false">
-    <iframe
-      allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-      frameborder="0"
-      height="450"
-      style="width:100%; max-width:660px; overflow:hidden; border-radius:10px;"
-      sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-      src="https://embed.music.apple.com/us/playlist/playlist-for-website/pl.u-aZb0N54I1lx30RP"
-    ></iframe>
+  <!-- Music playlist -->
+  <div class="music-player">
+    <p id="song-title">Loading...</p>
+    <audio id="audio" controls autoplay></audio>
+    <div class="controls">
+      <button onclick="prevSong()">⏮ Prev</button>
+      <button onclick="nextSong()">Next ⏭</button>
+    </div>
   </div>
 
-  <!-- Social icons (bottom) -->
-  <div class="socials" role="navigation" aria-label="Social links">
-    <a class="social" href="https://www.youtube.com/@sujaylmao" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+  <!-- Social icons -->
+  <div class="socials">
+    <a class="social" href="https://www.youtube.com/@sujaylmao" target="_blank">
       <img src="https://img.icons8.com/color/96/youtube-play.png" alt="YouTube">
     </a>
-
-    <!-- TikTok PNG (transparent background, normal PNG) -->
-    <a class="social" href="https://www.tiktok.com/@sujaylmao" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+    <a class="social" href="https://www.tiktok.com/@sujaylmao" target="_blank">
       <img src="https://img.icons8.com/color/96/tiktok.png" alt="TikTok">
     </a>
-
-    <a class="social" href="https://discord.com/users/your-discord-id" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+    <a class="social" href="https://discord.com/users/your-discord-id" target="_blank">
       <img src="https://img.icons8.com/color/96/discord-logo.png" alt="Discord">
     </a>
   </div>
+
+  <script>
+    // Replace with your GitHub username + repo name + path
+    const baseURL = "https://raw.githubusercontent.com/your-username/your-repo/main/";
+
+    const songs = [
+      "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
+      "Clockwork.mp3",
+      "Laufey - From The Start (Official Audio).mp3",
+      "Laufey - Mr. Eclectic (Official Lyric Video with Chords).mp3",
+      "AKAI (Slowed).mp3",
+      "temporex - numbers  lyrics.mp3",
+      "The Weeknd  Timeless with Playboi Carti (Official Music Video).mp3",
+      "Nope your too late i already died.mp3",
+      "Drive (From F1 The Movie).mp3",
+      "imnormal.mp3"
+    ];
+
+    let currentSong = 0;
+    const audio = document.getElementById("audio");
+    const songTitle = document.getElementById("song-title");
+
+    function loadSong(index) {
+      const song = songs[index];
+      audio.src = baseURL + encodeURIComponent(song);
+      songTitle.textContent = song;
+      audio.play();
+    }
+
+    function nextSong() {
+      currentSong = (currentSong + 1) % songs.length;
+      loadSong(currentSong);
+    }
+
+    function prevSong() {
+      currentSong = (currentSong - 1 + songs.length) % songs.length;
+      loadSong(currentSong);
+    }
+
+    // Auto play next when one ends
+    audio.addEventListener("ended", nextSong);
+
+    // Load first song
+    loadSong(currentSong);
+  </script>
 </body>
 </html>
