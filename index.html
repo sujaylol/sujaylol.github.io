@@ -3,106 +3,140 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>sujaylmao</title>
+  <title>sujaylmao — player</title>
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: black;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      color: white;
+    :root{
+      --bg: #000;
+      --panel: #0b0b0b;
+      --muted: #9aa0a6;
+      --accent: #cbd5e1;
+    }
+    html,body{height:100%;margin:0;}
+    body{
+      background: var(--bg);
+      color: #fff;
       font-family: Arial, sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:24px;
+      overflow:hidden;
     }
 
-    .stars {
-      position: absolute;
-      inset: 0;
+    .stars{
+      position:fixed; inset:0; z-index:-2;
       background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
       animation: moveStars 60s linear infinite;
-      z-index: -1;
+      opacity:0.55;
     }
-    @keyframes moveStars {
-      from { background-position: 0 0; }
-      to   { background-position: 10000px 10000px; }
+    @keyframes moveStars{ from{background-position:0 0} to{background-position:10000px 10000px} }
+
+    .player {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.03);
+      width: min(720px, 92%);
+      padding: 18px 22px;
+      border-radius: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:center;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.6);
     }
 
-    .music-player {
-      margin-top: 20px;
-      z-index: 2;
-      text-align: center;
-    }
-    audio {
-      width: 320px;
-      outline: none;
-      border-radius: 10px;
-    }
-    .controls {
-      margin-top: 10px;
-    }
-    .controls button {
-      background: #222;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      margin: 0 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .controls button:hover {
-      background: #444;
-    }
-
-    .socials {
-      position: fixed;
-      bottom: 20px;
-      display: flex;
-      gap: 36px;
-      z-index: 5;
-      align-items: center;
-      justify-content: center;
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      color: var(--accent);
+      text-align:center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       width: 100%;
     }
 
-    .social img {
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-      cursor: pointer;
-      transition: transform 0.25s ease, filter 0.25s ease;
-      filter: none;
+    .controls {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      justify-content:center;
+      color: #ddd;
+    }
+
+    .btn {
       background: transparent;
+      border: 1px solid rgba(255,255,255,0.04);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight:600;
+      user-select:none;
+      min-width:64px;
+      text-align:center;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .time {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size: 14px;
+      color: #cfcfcf;
+      min-width:40px;
+      text-align:center;
     }
 
-    .social img:hover {
-      transform: scale(1.12);
-      filter: drop-shadow(0 0 18px rgba(255,255,255,0.9));
+    .socials {
+      position:fixed;
+      bottom:20px;
+      display:flex;
+      gap:36px;
+      z-index:5;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      pointer-events:auto;
+    }
+    .social img{ width:72px; height:72px; object-fit:contain; transition:transform .18s ease, filter .18s ease; }
+    .social img:hover{ transform:scale(1.08); filter: drop-shadow(0 0 14px rgba(255,255,255,0.9)); }
+
+    .tap-to-play {
+      position:fixed; inset:0; z-index:30;
+      display:none;
+      align-items:center; justify-content:center;
+      background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.65));
+      cursor:pointer;
+      color:#fff;
+      font-size:14px;
+      text-align:center;
+      padding:20px;
     }
 
-    @media (max-width: 420px) {
-      .social img { width: 64px; height: 64px; }
-      audio { width: 240px; }
+    @media (max-width:520px){
+      .player{ padding:12px; }
+      .title{ font-size:16px; }
+      .btn{ min-width:56px; padding:6px 10px; }
+      .social img{ width:60px; height:60px; }
     }
   </style>
 </head>
 <body>
   <div class="stars"></div>
 
-  <!-- Music playlist -->
-  <div class="music-player">
-    <p id="song-title">Loading...</p>
-    <audio id="audio" controls autoplay></audio>
+  <div class="player">
+    <div class="title" id="songTitle">Loading...</div>
     <div class="controls">
-      <button onclick="prevSong()">⏮ Prev</button>
-      <button onclick="nextSong()">Next ⏭</button>
+      <button class="btn" id="prevBtn">skip</button>
+      <div class="time" id="currentTime">0:00</div>
+      <div class="time" id="durationTime">0:00</div>
+      <button class="btn" id="nextBtn">next</button>
     </div>
   </div>
 
-  <!-- Social icons -->
+  <audio id="audioEl" preload="metadata"></audio>
+
   <div class="socials">
     <a class="social" href="https://www.youtube.com/@sujaylmao" target="_blank">
       <img src="https://img.icons8.com/color/96/youtube-play.png" alt="YouTube">
@@ -115,9 +149,10 @@
     </a>
   </div>
 
+  <div class="tap-to-play" id="tapOverlay">Click anywhere to start music</div>
+
   <script>
-    // Replace with your GitHub username + repo name + path
-    const baseURL = "https://raw.githubusercontent.com/your-username/your-repo/main/";
+    const baseURL = "https://raw.githubusercontent.com/sujaylol/music-site/main/";
 
     const songs = [
       "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
@@ -132,32 +167,51 @@
       "imnormal.mp3"
     ];
 
-    let currentSong = 0;
-    const audio = document.getElementById("audio");
-    const songTitle = document.getElementById("song-title");
+    const audio = document.getElementById('audioEl');
+    const songTitle = document.getElementById('songTitle');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('durationTime');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const tapOverlay = document.getElementById('tapOverlay');
 
-    function loadSong(index) {
-      const song = songs[index];
-      audio.src = baseURL + encodeURIComponent(song);
-      songTitle.textContent = song;
-      audio.play();
+    let index = 0;
+
+    function formatTime(t){
+      if (!isFinite(t)) return "0:00";
+      const m = Math.floor(t/60);
+      const s = Math.floor(t%60).toString().padStart(2,'0');
+      return `${m}:${s}`;
     }
 
-    function nextSong() {
-      currentSong = (currentSong + 1) % songs.length;
-      loadSong(currentSong);
+    function loadSong(i){
+      index = (i + songs.length) % songs.length;
+      const filename = songs[index];
+      audio.src = baseURL + encodeURIComponent(filename);
+      songTitle.textContent = filename;
+      audio.load();
+      attemptPlay();
     }
 
-    function prevSong() {
-      currentSong = (currentSong - 1 + songs.length) % songs.length;
-      loadSong(currentSong);
+    function attemptPlay(){
+      audio.play().then(()=>{ tapOverlay.style.display='none'; })
+      .catch(()=>{ tapOverlay.style.display='flex'; });
     }
 
-    // Auto play next when one ends
-    audio.addEventListener("ended", nextSong);
+    audio.addEventListener('timeupdate', ()=>{ currentTimeEl.textContent = formatTime(audio.currentTime); });
+    audio.addEventListener('loadedmetadata', ()=>{ durationEl.textContent = formatTime(audio.duration); });
+    audio.addEventListener('ended', ()=>{ nextSong(); });
 
-    // Load first song
-    loadSong(currentSong);
+    function prevSong(){ loadSong(index-1); }
+    function nextSong(){ loadSong(index+1); }
+
+    prevBtn.addEventListener('click', prevSong);
+    nextBtn.addEventListener('click', nextSong);
+
+    tapOverlay.addEventListener('click', ()=>{ tapOverlay.style.display='none'; audio.play().catch(()=>{}); });
+    document.addEventListener('click', function startOnFirstClick(){ audio.play().catch(()=>{}); document.removeEventListener('click', startOnFirstClick); });
+
+    loadSong(index);
   </script>
 </body>
 </html>
