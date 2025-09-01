@@ -14,8 +14,8 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      font-family: Arial, sans-serif;
       color: white;
+      font-family: Arial, sans-serif;
     }
 
     .stars {
@@ -32,64 +32,55 @@
       to { background-position: 10000px 10000px; }
     }
 
-    /* Apple Music embed */
     .music-embed {
-      margin-top: 40px;
+      margin-bottom: auto;
       border-radius: 10px;
       overflow: hidden;
       max-width: 660px;
-      width: 90%;
-      z-index: 1;
+      width: 100%;
     }
 
-    /* Social icons at bottom with edge-hugging glow on hover */
     .socials {
-      position: fixed;
-      bottom: 20px;
       display: flex;
       gap: 40px;
-      z-index: 5;
+      margin-bottom: 40px;
+      position: absolute;
+      bottom: 20px;
     }
 
-    .socials img {
+    .social img {
       width: 80px;
       height: 80px;
-      border-radius: 15%;
+      object-fit: contain;
       cursor: pointer;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, filter 0.3s ease;
     }
 
-    .socials img:hover {
+    .social img:hover {
       transform: scale(1.1);
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
     }
-
-    /* Colored drop-shadow glow on hover */
-    .socials a:nth-child(1) img:hover { filter: drop-shadow(0 0 15px #FF0000); } /* YouTube red */
-    .socials a:nth-child(2) img:hover { filter: drop-shadow(0 0 15px #69C9D0); } /* TikTok cyan */
-    .socials a:nth-child(3) img:hover { filter: drop-shadow(0 0 15px #7289DA); } /* Discord blurple */
-
   </style>
 </head>
 <body>
   <div class="stars"></div>
 
-  <!-- Apple Music Embed higher on page -->
+  <!-- Apple Music Embed -->
   <div class="music-embed">
-    <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="450" style="width:100%; overflow:hidden; border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/playlist/playlist-for-website/pl.u-aZb0N54I1lx30RP"></iframe>
+    <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="450" style="width:100%; max-width:660px; overflow:hidden; border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/playlist/playlist-for-website/pl.u-aZb0N54I1lx30RP"></iframe>
   </div>
 
-  <!-- Social icons at bottom -->
+  <!-- Social icons -->
   <div class="socials">
     <a href="https://www.youtube.com/@sujaylmao" target="_blank">
       <img src="https://img.icons8.com/color/100/youtube-play.png" alt="YouTube">
     </a>
     <a href="https://www.tiktok.com/@sujaylmao" target="_blank">
-      <img src="https://www.cleanpng.com/png-tiktok-logo-clipart-tiktok-logo-transparent-background-3138705/" alt="TikTok">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/TikTok_logo_icon.png" alt="TikTok">
     </a>
     <a href="https://discord.com/users/your-discord-id" target="_blank">
       <img src="https://img.icons8.com/color/100/discord-logo.png" alt="Discord">
     </a>
   </div>
-
 </body>
 </html>
