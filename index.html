@@ -172,6 +172,44 @@ body {
   color:#fff;
   user-select:none;
 }
+
+/* Mobile adjustments applied via JS class */
+body.mobile .player {
+  min-width:200px;
+  max-width:350px;
+  gap:3px;
+}
+
+body.mobile .player h1 {
+  font-size:18px;
+}
+
+body.mobile .title {
+  font-size:14px;
+}
+
+body.mobile .btn img {
+  width:22px;
+  height:22px;
+}
+
+body.mobile .time {
+  font-size:10px;
+  min-width:25px;
+}
+
+body.mobile #volumeSlider {
+  width:60px;
+}
+
+body.mobile .social img {
+  width:50px;
+  height:50px;
+}
+
+body.mobile #clickOverlay {
+  font-size:24px;
+}
 </style>
 </head>
 <body>
@@ -211,6 +249,12 @@ body {
 <audio id="audioEl" preload="metadata"></audio>
 
 <script>
+/* DEVICE DETECTION */
+if(/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+  document.body.classList.add('mobile');
+}
+
+/* MUSIC PLAYER */
 const baseURL = "https://sujaylol.github.io/songs/";
 const songs = [
   "temporex - numbers  lyrics.mp3",
