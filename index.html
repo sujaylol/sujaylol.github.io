@@ -74,12 +74,13 @@
       z-index: 1;
     }
 
-    /* Social icons at bottom */
+    /* Social icons at bottom with constant glow */
     .socials {
       position: fixed;
       bottom: 20px;
       display: flex;
       gap: 40px;
+      z-index: 5;
     }
 
     .socials img {
@@ -87,12 +88,12 @@
       height: 80px;
       border-radius: 15%;
       cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 20px rgba(255,255,255,0.6); /* constant glow */
+      transition: transform 0.3s ease;
     }
 
     .socials img:hover {
       transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(255,255,255,0.6);
     }
 
   </style>
