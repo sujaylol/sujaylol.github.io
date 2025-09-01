@@ -80,7 +80,7 @@
       transform: translate(-50%, -50%);
       background: #111;
       border-radius: 20px;
-      padding: 30px;
+      padding: 30px 20px;
       text-align: center;
       z-index: 100;
       width: 300px;
@@ -90,23 +90,30 @@
     .modal img {
       width: 100px;
       height: 100px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       border-radius: 15%;
     }
 
     .modal .name {
       font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .modal .username {
+      font-size: 18px;
       margin-bottom: 20px;
+      color: #ccc;
     }
 
     .close-btn {
-      background: #333;
-      color: white;
+      background: none;
+      color: #fff;
       border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
+      font-size: 28px;
       cursor: pointer;
-      font-size: 16px;
+      position: absolute;
+      top: 10px;
+      right: 15px;
     }
 
     .overlay {
@@ -125,16 +132,16 @@
   <div class="stars"></div>
 
   <div class="socials">
-    <div class="social" data-name="YouTube" data-img="https://img.icons8.com/ios-filled/100/ffffff/youtube-play.png">
-      <img src="https://img.icons8.com/ios-filled/100/ffffff/youtube-play.png" alt="YouTube">
+    <div class="social" data-name="YouTube" data-img="https://img.icons8.com/color/100/youtube-play.png" data-username="sujaylmao">
+      <img src="https://img.icons8.com/color/100/youtube-play.png" alt="YouTube">
       <div class="username">YouTube</div>
     </div>
-    <div class="social" data-name="TikTok" data-img="https://img.icons8.com/ios-filled/100/ffffff/tiktok.png">
-      <img src="https://img.icons8.com/ios-filled/100/ffffff/tiktok.png" alt="TikTok">
+    <div class="social" data-name="TikTok" data-img="https://img.icons8.com/color/100/tiktok.png" data-username="@sujaylmao">
+      <img src="https://img.icons8.com/color/100/tiktok.png" alt="TikTok">
       <div class="username">TikTok</div>
     </div>
-    <div class="social" data-name="Discord" data-img="https://img.icons8.com/ios-filled/100/ffffff/discord-logo.png">
-      <img src="https://img.icons8.com/ios-filled/100/ffffff/discord-logo.png" alt="Discord">
+    <div class="social" data-name="Discord" data-img="https://img.icons8.com/color/100/discord-logo.png" data-username="sjtllix">
+      <img src="https://img.icons8.com/color/100/discord-logo.png" alt="Discord">
       <div class="username">Discord</div>
     </div>
   </div>
@@ -148,9 +155,10 @@
 
   <!-- Modal content -->
   <div class="modal">
+    <button class="close-btn">✖</button>
     <img src="" alt="Social">
     <div class="name"></div>
-    <button class="close-btn">Close</button>
+    <div class="username"></div>
   </div>
 
   <script>
@@ -158,6 +166,7 @@
     const modal = document.querySelector('.modal');
     const modalImg = modal.querySelector('img');
     const modalName = modal.querySelector('.name');
+    const modalUsername = modal.querySelector('.username');
     const closeBtn = modal.querySelector('.close-btn');
     const overlay = document.querySelector('.overlay');
 
@@ -165,20 +174,19 @@
       social.addEventListener('click', () => {
         modalImg.src = social.dataset.img;
         modalName.textContent = social.dataset.name;
+        modalUsername.textContent = social.dataset.username;
         modal.style.display = 'block';
         overlay.style.display = 'block';
       });
     });
 
-    closeBtn.addEventListener('click', () => {
+    function closeModal() {
       modal.style.display = 'none';
       overlay.style.display = 'none';
-    });
+    }
 
-    overlay.addEventListener('click', () => {
-      modal.style.display = 'none';
-      overlay.style.display = 'none';
-    });
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
   </script>
 </body>
 </html>
