@@ -42,27 +42,27 @@ body {
   flex-direction:column;
   align-items:center;
   gap:5px;
-  min-width:300px;
-  max-width:500px;
+  min-width:280px;
+  max-width:450px;
   z-index:1;
 }
 
 .player h1 {
-  font-size:24px;
+  font-size:22px;
   color:#8ed0f0;
   margin:0;
-  text-shadow:0 0 5px #8ed0f0;
+  text-shadow: 0 0 5px #8ed0f0;
 }
 
 .title {
-  font-size:18px;
+  font-size:16px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
   width:100%;
   text-align:center;
   color:#8ed0f0;
-  text-shadow:0 0 5px #8ed0f0;
+  text-shadow: 0 0 4px #8ed0f0;
 }
 
 .controls {
@@ -92,7 +92,8 @@ body {
   min-width:30px;
   text-align:center;
   color:#ccc;
-  text-shadow:0 0 3px #fff;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  text-shadow: 0 0 3px #fff;
 }
 
 .timeline-wrapper {
@@ -106,13 +107,16 @@ body {
 #progress {
   flex:1;
   height:4px;
-  background:#000;
+  background:#111;
+  accent-color:#8ed0f0;
 }
 
 .volume-container {
   display:flex;
   align-items:center;
   position:relative;
+  margin-left:5px;
+  overflow:visible;
 }
 
 #volumeIcon {
@@ -127,26 +131,55 @@ body {
 }
 
 #volumeSlider {
-  width:100px;
+  width:0;
   height:4px;
-  background:#000;
   margin-left:5px;
+  transition: width 0.3s ease;
+  background:#111;
+  accent-color:#8ed0f0;
+}
+
+/* Expand volume on hover and hide timeline on desktop */
+@media screen and (min-width:601px){
+  .volume-container:hover #volumeSlider {
+    width:120px;
+    margin-left:5px;
+  }
+
+  .volume-container:hover ~ .timeline-wrapper {
+    opacity:0;
+    visibility:hidden;
+  }
+}
+
+/* Mobile fix: always show volume and timeline stays */
+@media screen and (max-width:600px){
+  #volumeSlider {
+    width:80px !important;
+  }
+  .volume-container:hover ~ .timeline-wrapper {
+    opacity:1 !important;
+    visibility:visible !important;
+  }
+  .player {
+    min-width:90%;
+  }
 }
 
 /* Socials at bottom */
 .socials {
   position:fixed;
-  bottom:20px;
+  bottom:15px;
   display:flex;
-  gap:30px;
+  gap:20px;
   justify-content:center;
   width:100%;
   z-index:1;
 }
 
 .social img {
-  width:72px;
-  height:72px;
+  width:60px;
+  height:60px;
   object-fit:contain;
   transition: transform .2s ease, filter .2s ease;
   cursor:pointer;
@@ -156,67 +189,11 @@ body {
   transform: scale(1.08);
   filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
 }
-
-/* Click overlay */
-#clickOverlay {
-  position:absolute;
-  inset:0;
-  background:black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:10;
-  font-family:'CfCheerio', Arial, sans-serif;
-  font-size:32px;
-  cursor:pointer;
-  color:#fff;
-  user-select:none;
-}
-
-/* Mobile adjustments applied via JS class */
-body.mobile .player {
-  min-width:200px;
-  max-width:350px;
-  gap:3px;
-}
-
-body.mobile .player h1 {
-  font-size:18px;
-}
-
-body.mobile .title {
-  font-size:14px;
-}
-
-body.mobile .btn img {
-  width:22px;
-  height:22px;
-}
-
-body.mobile .time {
-  font-size:10px;
-  min-width:25px;
-}
-
-body.mobile #volumeSlider {
-  width:60px;
-}
-
-body.mobile .social img {
-  width:50px;
-  height:50px;
-}
-
-body.mobile #clickOverlay {
-  font-size:24px;
-}
 </style>
 </head>
 <body>
 
 <div class="stars"></div>
-
-<div id="clickOverlay">click</div>
 
 <div class="player">
   <h1>sujaylmao</h1>
@@ -234,7 +211,7 @@ body.mobile #clickOverlay {
     </div>
 
     <div class="volume-container">
-      <img src="https://img.icons8.com/color/48/000000/medium-volume.png" id="volumeIcon">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/speaker.png" id="volumeIcon">
       <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
     </div>
   </div>
@@ -249,12 +226,6 @@ body.mobile #clickOverlay {
 <audio id="audioEl" preload="metadata"></audio>
 
 <script>
-/* DEVICE DETECTION */
-if(/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-  document.body.classList.add('mobile');
-}
-
-/* MUSIC PLAYER */
 const baseURL = "https://sujaylol.github.io/songs/";
 const songs = [
   "temporex - numbers  lyrics.mp3",
@@ -278,7 +249,6 @@ const nextBtn = document.getElementById('nextBtn');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const progress = document.getElementById('progress');
 const volumeSlider = document.getElementById('volumeSlider');
-const clickOverlay = document.getElementById('clickOverlay');
 
 let index = 0;
 let isPlaying = false;
@@ -300,6 +270,7 @@ function loadSong(i){
   audio.src = baseURL + encodeURIComponent(filename);
   songTitle.textContent = displayTitle(filename);
   audio.load();
+  if(isPlaying) audio.play().catch(()=>{});
 }
 
 function playPause(){
@@ -335,15 +306,12 @@ nextBtn.addEventListener('click', nextSong);
 playPauseBtn.addEventListener('click', playPause);
 volumeSlider.addEventListener('input', ()=>{ audio.volume = volumeSlider.value; });
 
-// Load song metadata immediately
-loadSong(index);
-
-// Click overlay to start playback
-clickOverlay.addEventListener('click', ()=>{
-  clickOverlay.style.display='none';
+// Auto play on open
+window.addEventListener('load', ()=>{
+  loadSong(index);
   audio.play().catch(()=>{});
-  isPlaying = true;
-  playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
+  playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/play.png"; // play icon default
+  isPlaying=false;
 });
 </script>
 
