@@ -1,0 +1,6 @@
+body {
+  background-color: black;
+  color: white; /* so text is visible */
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
