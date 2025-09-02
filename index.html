@@ -37,6 +37,7 @@ body {
   to { background-position:10000px 10000px; }
 }
 
+/* MUSIC PLAYER STYLES */
 .player {
   display:flex;
   flex-direction:column;
@@ -173,6 +174,18 @@ body {
   user-select:none;
 }
 
+/* SITE VIEWS COUNTER */
+#viewsCounter {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-family: 'CfCheerio', Arial, sans-serif;
+  color: #8ed0f0;
+  text-shadow: 0 0 10px #8ed0f0, 0 0 20px #8ed0f0, 0 0 30px #8ed0f0;
+  font-size: 14px;
+  z-index: 20;
+}
+
 /* MOBILE STYLES */
 body.mobile .player {
   min-width:220px;
@@ -209,18 +222,6 @@ body.mobile .social img {
 
 body.mobile #clickOverlay {
   font-size:24px;
-}
-
-/* SITE VIEWS COUNTER */
-#viewsCounter {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  font-family: 'CfCheerio', Arial, sans-serif;
-  color: #8ed0f0;
-  text-shadow: 0 0 10px #8ed0f0, 0 0 20px #8ed0f0, 0 0 30px #8ed0f0;
-  font-size: 14px;
-  z-index: 20;
 }
 </style>
 </head>
@@ -376,28 +377,26 @@ clickOverlay.addEventListener('click', ()=>{
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
 
-// MINIMAL VIEWS COUNTER WITH GOOGLE SHEET
+// SITE VIEWS COUNTER (Google Sheet + IP tracking)
 const viewsNumber = document.getElementById('viewsNumber');
-const scriptURL = 'https://script.google.com/macros/s/AKfycbywKWXA5YMysuxAt8645R2NlLJb1JoeEc9pHSelXCwkQSWkaNiL9_dMy7b0BK_LoHjD/exec';
+const scriptURL = 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL'; // <-- replace with your deployed Apps Script URL
 
-// Get visitor IP and update views
 fetch('https://ipapi.co/json/')
   .then(res => res.json())
   .then(data => {
     const ip = data.ip;
 
-    // Fetch current total views
+    // Get current total views
     fetch(scriptURL)
       .then(r => r.json())
       .then(totalData => {
         viewsNumber.textContent = totalData.total || 0;
       });
 
-    // Send IP to Google Script to check/add
+    // Increment if new IP
     fetch(scriptURL + '?ip=' + ip)
       .then(r => r.text())
       .then(resp => {
-        console.log(resp);
         if(resp === "New view"){
           let current = parseInt(viewsNumber.textContent) || 0;
           viewsNumber.textContent = current + 1;
