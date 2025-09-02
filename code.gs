@@ -1,29 +1,29 @@
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/1LzZ5qZoxlah7cicnsoZhCjJYbnyEdqkIQuMDSOrWyoE/edit";
-const SHEET_NAME = "Sheet1";
-
 function doGet(e) {
-  const ss = SpreadsheetApp.openByUrl(SHEET_URL);
-  const sheet = ss.getSheetByName(SHEET_NAME);
+  const ss = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1LzZ5qZoxlah7cicnsoZhCjJYbnyEdqkIQuMDSOrWyoE/edit?usp=sharing");
+  const sheet = ss.getSheetByName("Sheet1");
 
-  // Read all existing IPs
-  const data = sheet.getDataRange().getValues(); // assume first column is IP
-  const ips = data.map(r => r[0]).filter(Boolean);
+  // Get visitor IP
+  const ip = e.parameter.ip;
+  const data = sheet.getDataRange().getValues();
+  let exists = false;
 
-  // If IP provided, add it if new
-  if (e.parameter.ip) {
-    const ip = e.parameter.ip;
-    if (!ips.includes(ip)) {
-      sheet.appendRow([ip, new Date()]); // store IP and timestamp
-      ips.push(ip);
-      return ContentService.createTextOutput("New view");
-    } else {
-      return ContentService.createTextOutput("Returning visitor");
+  // Check if IP already exists
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][0] === ip) {
+      exists = true;
+      break;
     }
   }
 
-  // Return total unique views as JSON
-  const total = ips.length;
-  const json = { total: total };
-  return ContentService.createTextOutput(JSON.stringify(json))
-        .setMimeType(ContentService.MimeType.JSON);
+  // If new, add IP
+  if (!exists && ip) {
+    sheet.appendRow([ip, new Date()]);
+  }
+
+  // Count total unique views
+  const views = sheet.getLastRow();
+
+  return ContentService
+         .createTextOutput(JSON.stringify({views: views}))
+         .setMimeType(ContentService.MimeType.JSON);
 }
