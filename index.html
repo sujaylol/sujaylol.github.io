@@ -198,7 +198,6 @@ body.mobile .time {
   min-width:25px;
 }
 
-/* Hide the entire volume container on mobile */
 body.mobile .volume-container {
   display:none;
 }
@@ -377,13 +376,26 @@ clickOverlay.addEventListener('click', ()=>{
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
 
-// SITE VIEWS COUNTER USING ABACUS
-fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views')
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById('viewsCounter').textContent = `Site Views: ${data.value}`;
-  })
-  .catch(err => console.error('Views counter error:', err));
+// SITE VIEWS COUNTER 1 VIEW PER DEVICE
+const siteKey = 'sujaylmao_visited';
+if (!localStorage.getItem(siteKey)) {
+  // First time visitor: increment
+  fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('viewsCounter').textContent = `Site Views: ${data.value}`;
+      localStorage.setItem(siteKey,'true');
+    })
+    .catch(err => console.error('Views counter error:', err));
+} else {
+  // Already visited: just fetch current count
+  fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views?increment=false')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('viewsCounter').textContent = `Site Views: ${data.value}`;
+    })
+    .catch(err => console.error('Views counter error:', err));
+}
 </script>
 
 </body>
