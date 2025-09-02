@@ -211,7 +211,7 @@ body.mobile #clickOverlay {
   font-size:24px;
 }
 
-/* SITE VIEWS GLOW */
+/* SITE VIEWS COUNTER */
 #viewsCounter {
   position: fixed;
   top: 10px;
@@ -219,7 +219,7 @@ body.mobile #clickOverlay {
   font-family: 'CfCheerio', Arial, sans-serif;
   color: #8ed0f0;
   text-shadow: 0 0 10px #8ed0f0, 0 0 20px #8ed0f0, 0 0 30px #8ed0f0;
-  font-size: 12px;
+  font-size: 14px;
   z-index: 20;
 }
 </style>
@@ -261,7 +261,7 @@ body.mobile #clickOverlay {
 
 <audio id="audioEl" preload="metadata"></audio>
 
-<div id="viewsCounter">Site Views: 0</div>
+<div id="viewsCounter">👁️ <span id="viewsNumber">0</span></div>
 
 <script>
 // DEVICE DETECTION
@@ -376,25 +376,21 @@ clickOverlay.addEventListener('click', ()=>{
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
 
-// SITE VIEWS COUNTER 1 VIEW PER DEVICE
+// SITE VIEWS COUNTER (1 VIEW PER DEVICE)
 const siteKey = 'sujaylmao_visited';
-if (!localStorage.getItem(siteKey)) {
-  // First time visitor: increment
-  fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views')
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('viewsCounter').textContent = `Site Views: ${data.value}`;
-      localStorage.setItem(siteKey,'true');
-    })
-    .catch(err => console.error('Views counter error:', err));
+const viewsNumber = document.getElementById('viewsNumber');
+
+if(!localStorage.getItem(siteKey)){
+    localStorage.setItem(siteKey,'true'); // first visit
+    fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views')
+      .then(res=>res.json())
+      .then(data=>{ viewsNumber.textContent = data.value; })
+      .catch(err=>console.error(err));
 } else {
-  // Already visited: just fetch current count
-  fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views?increment=false')
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('viewsCounter').textContent = `Site Views: ${data.value}`;
-    })
-    .catch(err => console.error('Views counter error:', err));
+    fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views?increment=false')
+      .then(res=>res.json())
+      .then(data=>{ viewsNumber.textContent = data.value; })
+      .catch(err=>console.error(err));
 }
 </script>
 
