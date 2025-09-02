@@ -133,6 +133,7 @@ body {
   margin-left:5px;
 }
 
+/* Socials at bottom */
 .socials {
   position:fixed;
   bottom:20px;
@@ -156,6 +157,7 @@ body {
   filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
 }
 
+/* Click overlay */
 #clickOverlay {
   position:absolute;
   inset:0;
@@ -171,6 +173,7 @@ body {
   user-select:none;
 }
 
+/* MOBILE STYLES */
 body.mobile .player {
   min-width:220px;
   max-width:350px;
@@ -208,6 +211,7 @@ body.mobile #clickOverlay {
   font-size:24px;
 }
 
+/* SITE VIEWS COUNTER */
 #viewsCounter {
   position: fixed;
   top: 10px;
@@ -290,7 +294,6 @@ const playPauseBtn = document.getElementById('playPauseBtn');
 const progress = document.getElementById('progress');
 const volumeSlider = document.getElementById('volumeSlider');
 const clickOverlay = document.getElementById('clickOverlay');
-const viewsNumber = document.getElementById('viewsNumber');
 
 let index = 0;
 let isPlaying = false;
@@ -373,19 +376,22 @@ clickOverlay.addEventListener('click', ()=>{
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
 
-// UNIQUE SITE VIEWS COUNTER USING GOOGLE SHEETS
-fetch('https://ipapi.co/json/')
-  .then(res => res.json())
-  .then(data => {
-    const ip = data.ip;
-    return fetch('https://script.google.com/macros/s/AKfycbywKWXA5YMysuxAt8645R2NlLJb1JoeEc9pHSelXCwkQSWkaNiL9_dMy7b0BK_LoHjD/exec?ip=' + ip)
-  })
-  .then(res => res.json())
-  .then(data => {
-    viewsNumber.textContent = data.views;
-  })
-  .catch(err => console.error('Views error:', err));
+// SITE VIEWS COUNTER
+const viewsNumber = document.getElementById('viewsNumber');
 
+// Get visitor IP and send to Google Apps Script
+fetch('https://ipapi.co/json/')
+.then(res => res.json())
+.then(data => {
+  const ip = data.ip;
+
+  fetch('https://script.google.com/macros/s/AKfycbwyqX-mH6Mpepo_PYyL0eHWeMXPkyNPOnAFyRrPGd9ZO8yYWjcBEDHBRC6RnmbUAyy0/exec?ip=' + ip)
+    .then(res => res.text())
+    .then(count => {
+      viewsNumber.textContent = count;
+    })
+    .catch(err => console.error('Error updating views:', err));
+});
 </script>
 </body>
 </html>
