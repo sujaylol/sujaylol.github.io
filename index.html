@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sujaylmao</title>
+<style>
+@font-face {
+  font-family: 'CfCheerio';
+  src: url('https://sujaylol.github.io/CfCheerioDemoRegular-PVKKP.ttf') format('truetype');
+}
+
+body {
+  margin:0;
+  height:100vh;
+  background:black;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  font-family:'CfCheerio', Arial, sans-serif;
+  color:#fff;
+  overflow:hidden;
+}
+
+.stars {
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
+  animation: moveStars 60s linear infinite;
+  z-index:-1;
+}
+
+@keyframes moveStars {
+  from { background-position:0 0; }
+  to { background-position:10000px 10000px; }
+}
+
+.player {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:5px;
+  min-width:300px;
+  max-width:500px;
+  z-index:1;
+}
+
+.player h1 {
+  font-size:24px;
+  color:#8ed0f0;
+  margin:0;
+  text-shadow:0 0 5px #8ed0f0;
+}
+
+.title {
+  font-size:18px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  width:100%;
+  text-align:center;
+  color:#8ed0f0;
+  text-shadow:0 0 5px #8ed0f0;
+}
+
+.controls {
+  display:flex;
+  align-items:center;
+  gap:5px;
+  width:100%;
+  justify-content:center;
+  position:relative;
+}
+
+.btn {
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  padding:0;
+}
+
+.btn img {
+  width:28px;
+  height:28px;
+}
+
+.time {
+  font-family: 'CfCheerio', monospace;
+  font-size:12px;
+  min-width:30px;
+  text-align:center;
+  color:#ccc;
+  text-shadow:0 0 3px #fff;
+}
+
+.timeline-wrapper {
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#progress {
+  flex:1;
+  height:4px;
+  background:#000;
+}
+
+.volume-container {
+  display:flex;
+  align-items:center;
+  position:relative;
+}
+
+#volumeIcon {
+  width:28px;
+  height:28px;
+  cursor:pointer;
+  transition: transform 0.2s ease;
+}
+
+#volumeIcon:hover {
+  transform:scale(1.1);
+}
+
+#volumeSlider {
+  width:100px;
+  height:4px;
+  background:#000;
+  margin-left:5px;
+}
+
+/* Socials at bottom */
+.socials {
+  position:fixed;
+  bottom:20px;
+  display:flex;
+  gap:30px;
+  justify-content:center;
+  width:100%;
+  z-index:1;
+}
+
+.social img {
+  width:72px;
+  height:72px;
+  object-fit:contain;
+  transition: transform .2s ease, filter .2s ease;
+  cursor:pointer;
+}
+
+.social img:hover {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
+}
+
+/* Click overlay */
+#clickOverlay {
+  position:absolute;
+  inset:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  font-family:'CfCheerio', Arial, sans-serif;
+  font-size:32px;
+  cursor:pointer;
+  color:#fff;
+  user-select:none;
+}
+
+/* MOBILE STYLES */
+body.mobile .player {
+  min-width:220px;
+  max-width:350px;
+  gap:4px;
+}
+
+body.mobile .player h1 {
+  font-size:18px;
+}
+
+body.mobile .title {
+  font-size:14px;
+}
+
+body.mobile .btn img {
+  width:22px;
+  height:22px;
+}
+
+body.mobile .time {
+  font-size:10px;
+  min-width:25px;
+}
+
+body.mobile .volume-container {
+  display:none;
+}
+
+body.mobile .social img {
+  width:50px;
+  height:50px;
+}
+
+body.mobile #clickOverlay {
+  font-size:24px;
+}
+
+/* SITE VIEWS COUNTER */
+#viewsCounter {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-family: 'CfCheerio', Arial, sans-serif;
+  color: #8ed0f0;
+  text-shadow: 0 0 10px #8ed0f0, 0 0 20px #8ed0f0, 0 0 30px #8ed0f0;
+  font-size: 14px;
+  z-index: 20;
+}
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<div id="clickOverlay">click</div>
+
+<div class="player">
+  <h1>sujaylmao</h1>
+  <div class="title" id="songTitle">Loading...</div>
+  <div class="controls">
+    <button class="btn" id="prevBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/skip-to-start.png"/></button>
+    <button class="btn" id="playPauseBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/play.png"/></button>
+    <button class="btn" id="nextBtn"><img src="https://img.icons8.com/ios-filled/50/ffffff/end.png"/></button>
+
+    <span class="time" id="currentTime">0:00</span>
+
+    <div class="timeline-wrapper">
+      <input type="range" id="progress" value="0" min="0" step="1">
+      <span class="time" id="duration">0:00</span>
+    </div>
+
+    <div class="volume-container">
+      <img src="https://img.icons8.com/color/48/000000/medium-volume.png" id="volumeIcon">
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+    </div>
+  </div>
+</div>
+
+<div class="socials">
+  <a class="social" href="https://www.youtube.com/@sujaylmao" target="_blank"><img src="https://img.icons8.com/color/96/youtube-play.png" alt="YouTube"></a>
+  <a class="social" href="https://www.tiktok.com/@sujaylmao" target="_blank"><img src="https://img.icons8.com/color/96/tiktok.png" alt="TikTok"></a>
+  <a class="social" href="https://discord.com/users/your-discord-id" target="_blank"><img src="https://img.icons8.com/color/96/discord-logo.png" alt="Discord"></a>
+  <a class="social" href="https://www.roblox.com/users/1894612427/profile" target="_blank"><img src="https://img.icons8.com/color/96/roblox.png" alt="Roblox"></a>
+</div>
+
+<audio id="audioEl" preload="metadata"></audio>
+
+<div id="viewsCounter">👁️ <span id="viewsNumber">0</span></div>
+
+<script>
+// DEVICE DETECTION
+if(/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+  document.body.classList.add('mobile');
+}
+
+// SONG LIST
+const baseURL = "https://sujaylol.github.io/songs/";
+const songs = [
+  "temporex - numbers  lyrics.mp3",
+  "Laufey - Lover Girl (Official Lyric Video with Chords).mp3",
+  "Clockwork.mp3",
+  "Laufey - From The Start (Official Audio).mp3",
+  "Laufey - Mr. Eclectic (Official Lyric Video with Chords).mp3",
+  "AKAI (Slowed).mp3",
+  "The Weeknd  Timeless with Playboi Carti (Official Music Video).mp3",
+  "Nope your too late i already died.mp3",
+  "Drive (From F1 The Movie).mp3",
+  "imnormal.mp3"
+];
+
+const audio = document.getElementById('audioEl');
+const songTitle = document.getElementById('songTitle');
+const currentTimeEl = document.getElementById('currentTime');
+const durationEl = document.getElementById('duration');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const progress = document.getElementById('progress');
+const volumeSlider = document.getElementById('volumeSlider');
+const clickOverlay = document.getElementById('clickOverlay');
+
+// FORMAT TIME
+function formatTime(t){
+  if(!isFinite(t)) return "0:00";
+  const m = Math.floor(t/60);
+  const s = Math.floor(t%60).toString().padStart(2,'0');
+  return `${m}:${s}`;
+}
+
+// DISPLAY CLEAN TITLE
+function displayTitle(filename){
+  let title = filename.replace(/\.mp3$/i,'');
+  title = title.replace(/\s*\(.*?\)/g,'');
+  return title.trim();
+}
+
+// LOAD SONG
+function loadSong(i){
+  index = (i + songs.length) % songs.length;
+  const filename = songs[index];
+  audio.src = baseURL + encodeURIComponent(filename);
+  songTitle.textContent = displayTitle(filename);
+  audio.load();
+}
+
+// PLAY/PAUSE
+let index = 0;
+let isPlaying = false;
+
+function playPause(){
+  if(isPlaying){
+    audio.pause();
+    isPlaying=false;
+    playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/play.png";
+  } else {
+    audio.play();
+    isPlaying=true;
+    playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
+  }
+}
+
+// NEXT/PREV SONG
+function prevSong(){ loadSong(index-1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
+function nextSong(){ loadSong(index+1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
+
+// UPDATE TIME AND PROGRESS
+audio.addEventListener('timeupdate', ()=>{
+  currentTimeEl.textContent = formatTime(audio.currentTime);
+  progress.value = Math.floor(audio.currentTime);
+});
+
+audio.addEventListener('loadedmetadata', ()=>{
+  durationEl.textContent = formatTime(audio.duration);
+  progress.max = Math.floor(audio.duration);
+});
+
+audio.addEventListener('ended', nextSong);
+
+// PROGRESS SLIDER
+progress.addEventListener('input', ()=>{ audio.currentTime = progress.value; });
+prevBtn.addEventListener('click', prevSong);
+nextBtn.addEventListener('click', nextSong);
+playPauseBtn.addEventListener('click', playPause);
+
+// VOLUME
+volumeSlider.addEventListener('input', ()=>{
+  if(!document.body.classList.contains('mobile')){
+    audio.volume = volumeSlider.value;
+  }
+});
+
+// LOAD FIRST SONG
+loadSong(index);
+
+// CLICK OVERLAY
+clickOverlay.addEventListener('click', ()=>{
+  clickOverlay.style.display='none';
+  audio.play().catch(()=>{});
+  isPlaying = true;
+  playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
+});
+
+// SITE VIEWS COUNTER (WORKING)
+const viewsNumber = document.getElementById('viewsNumber');
+const webAppURL = 'https://script.google.com/macros/s/AKfycbwyqX-mH6Mpepo_PYyL0eHWeMXPkyNPOnAFyRrPGd9ZO8yYWjcBEDHBRC6RnmbUAyy0/exec';
+
+fetch('https://api.ipify.org?format=json')
+  .then(res => res.json())
+  .then(data => {
+    const visitorIP = data.ip;
+    return fetch(webAppURL + '?ip=' + visitorIP);
+  })
+  .then(res => res.text())
+  .then(count => {
+    viewsNumber.textContent = count;
+  })
+  .catch(err => console.error('Views counter error:', err));
+</script>
+</body>
+</html>
