@@ -133,7 +133,6 @@ body {
   margin-left:5px;
 }
 
-/* Socials at bottom */
 .socials {
   position:fixed;
   bottom:20px;
@@ -157,7 +156,6 @@ body {
   filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
 }
 
-/* Click overlay */
 #clickOverlay {
   position:absolute;
   inset:0;
@@ -173,7 +171,6 @@ body {
   user-select:none;
 }
 
-/* MOBILE STYLES */
 body.mobile .player {
   min-width:220px;
   max-width:350px;
@@ -211,7 +208,6 @@ body.mobile #clickOverlay {
   font-size:24px;
 }
 
-/* SITE VIEWS COUNTER */
 #viewsCounter {
   position: fixed;
   top: 10px;
@@ -219,7 +215,7 @@ body.mobile #clickOverlay {
   font-family: 'CfCheerio', Arial, sans-serif;
   color: #8ed0f0;
   text-shadow: 0 0 10px #8ed0f0, 0 0 20px #8ed0f0, 0 0 30px #8ed0f0;
-  font-size: 16px;
+  font-size: 14px;
   z-index: 20;
 }
 </style>
@@ -309,7 +305,8 @@ function formatTime(t){
 
 // DISPLAY CLEAN TITLE
 function displayTitle(filename){
-  let title = filename.replace(/\.mp3$/i,'').replace(/\s*\(.*?\)/g,'');
+  let title = filename.replace(/\.mp3$/i,'');
+  title = title.replace(/\s*\(.*?\)/g,'');
   return title.trim();
 }
 
@@ -340,8 +337,16 @@ function prevSong(){ loadSong(index-1); audio.play(); isPlaying=true; playPauseB
 function nextSong(){ loadSong(index+1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
 
 // UPDATE TIME AND PROGRESS
-audio.addEventListener('timeupdate', ()=>{ currentTimeEl.textContent = formatTime(audio.currentTime); progress.value = Math.floor(audio.currentTime); });
-audio.addEventListener('loadedmetadata', ()=>{ durationEl.textContent = formatTime(audio.duration); progress.max = Math.floor(audio.duration); });
+audio.addEventListener('timeupdate', ()=>{
+  currentTimeEl.textContent = formatTime(audio.currentTime);
+  progress.value = Math.floor(audio.currentTime);
+});
+
+audio.addEventListener('loadedmetadata', ()=>{
+  durationEl.textContent = formatTime(audio.duration);
+  progress.max = Math.floor(audio.duration);
+});
+
 audio.addEventListener('ended', nextSong);
 
 // PROGRESS SLIDER
@@ -351,7 +356,11 @@ nextBtn.addEventListener('click', nextSong);
 playPauseBtn.addEventListener('click', playPause);
 
 // VOLUME
-volumeSlider.addEventListener('input', ()=>{ if(!document.body.classList.contains('mobile')) audio.volume = volumeSlider.value; });
+volumeSlider.addEventListener('input', ()=>{
+  if(!document.body.classList.contains('mobile')){
+    audio.volume = volumeSlider.value;
+  }
+});
 
 // LOAD FIRST SONG
 loadSong(index);
@@ -362,15 +371,20 @@ clickOverlay.addEventListener('click', ()=>{
   audio.play().catch(()=>{});
   isPlaying = true;
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
-
-  // GET IP AND UPDATE VIEWS
-  fetch('https://script.google.com/macros/s/AKfycbywKWXA5YMysuxAt8645R2NlLJb1JoeEc9pHSelXCwkQSWkaNiL9_dMy7b0BK_LoHjD/exec')
-    .then(res => res.json())
-    .then(data => {
-      viewsNumber.textContent = data.views;
-    })
-    .catch(err => console.error('Views error:', err));
 });
+
+// UNIQUE SITE VIEWS COUNTER USING GOOGLE SHEETS
+fetch('https://ipapi.co/json/')
+  .then(res => res.json())
+  .then(data => {
+    const ip = data.ip;
+    return fetch('https://script.google.com/macros/s/AKfycbywKWXA5YMysuxAt8645R2NlLJb1JoeEc9pHSelXCwkQSWkaNiL9_dMy7b0BK_LoHjD/exec?ip=' + ip)
+  })
+  .then(res => res.json())
+  .then(data => {
+    viewsNumber.textContent = data.views;
+  })
+  .catch(err => console.error('Views error:', err));
 
 </script>
 </body>
