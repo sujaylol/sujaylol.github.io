@@ -376,23 +376,16 @@ clickOverlay.addEventListener('click', ()=>{
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
 
-// SITE VIEWS COUNTER (1 VIEW PER DEVICE)
-const siteKey = 'sujaylmao_visited';
+// SITE VIEWS COUNTER (IP-BASED UNIQUE)
 const viewsNumber = document.getElementById('viewsNumber');
+// Replace with your backend URL
+const backendURL = 'http://YOUR_SERVER_IP:3000/views';
 
-if(!localStorage.getItem(siteKey)){
-    localStorage.setItem(siteKey,'true'); // first visit
-    fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views')
-      .then(res=>res.json())
-      .then(data=>{ viewsNumber.textContent = data.value; })
-      .catch(err=>console.error(err));
-} else {
-    fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views?increment=false')
-      .then(res=>res.json())
-      .then(data=>{ viewsNumber.textContent = data.value; })
-      .catch(err=>console.error(err));
-}
+fetch(backendURL)
+  .then(res => res.json())
+  .then(data => { viewsNumber.textContent = data.views; })
+  .catch(err => console.error('Views counter error:', err));
+
 </script>
-
 </body>
 </html>
