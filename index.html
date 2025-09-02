@@ -133,6 +133,7 @@ body {
   margin-left:5px;
 }
 
+/* Socials at bottom */
 .socials {
   position:fixed;
   bottom:20px;
@@ -156,6 +157,7 @@ body {
   filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
 }
 
+/* Click overlay */
 #clickOverlay {
   position:absolute;
   inset:0;
@@ -171,6 +173,7 @@ body {
   user-select:none;
 }
 
+/* MOBILE STYLES */
 body.mobile .player {
   min-width:220px;
   max-width:350px;
@@ -216,7 +219,7 @@ body.mobile #clickOverlay {
   font-family: 'CfCheerio', Arial, sans-serif;
   color: #8ed0f0;
   text-shadow: 0 0 10px #8ed0f0, 0 0 20px #8ed0f0, 0 0 30px #8ed0f0;
-  font-size: 16px;
+  font-size: 14px;
   z-index: 20;
 }
 </style>
@@ -292,9 +295,6 @@ const progress = document.getElementById('progress');
 const volumeSlider = document.getElementById('volumeSlider');
 const clickOverlay = document.getElementById('clickOverlay');
 
-let index = 0;
-let isPlaying = false;
-
 // FORMAT TIME
 function formatTime(t){
   if(!isFinite(t)) return "0:00";
@@ -320,6 +320,9 @@ function loadSong(i){
 }
 
 // PLAY/PAUSE
+let index = 0;
+let isPlaying = false;
+
 function playPause(){
   if(isPlaying){
     audio.pause();
@@ -373,13 +376,21 @@ clickOverlay.addEventListener('click', ()=>{
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
 
-// SITE VIEWS COUNTER
+// SITE VIEWS COUNTER (WORKING)
 const viewsNumber = document.getElementById('viewsNumber');
-fetch('https://script.google.com/macros/s/AKfycbwyqX-mH6Mpepo_PYyL0eHWeMXPkyNPOnAFyRrPGd9ZO8yYWjcBEDHBRC6RnmbUAyy0/exec')
-  .then(res => res.text())
-  .then(count => { viewsNumber.textContent = count; })
-  .catch(err => console.error('Error updating views:', err));
-</script>
+const webAppURL = 'https://script.google.com/macros/s/AKfycbwyqX-mH6Mpepo_PYyL0eHWeMXPkyNPOnAFyRrPGd9ZO8yYWjcBEDHBRC6RnmbUAyy0/exec';
 
+fetch('https://api.ipify.org?format=json')
+  .then(res => res.json())
+  .then(data => {
+    const visitorIP = data.ip;
+    return fetch(webAppURL + '?ip=' + visitorIP);
+  })
+  .then(res => res.text())
+  .then(count => {
+    viewsNumber.textContent = count;
+  })
+  .catch(err => console.error('Views counter error:', err));
+</script>
 </body>
 </html>
