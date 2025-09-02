@@ -211,6 +211,18 @@ body.mobile .social img {
 body.mobile #clickOverlay {
   font-size:24px;
 }
+
+/* SITE VIEWS GLOW */
+#viewsCounter {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-family: 'CfCheerio', Arial, sans-serif;
+  color: #8ed0f0;
+  text-shadow: 0 0 10px #8ed0f0, 0 0 20px #8ed0f0, 0 0 30px #8ed0f0;
+  font-size: 12px;
+  z-index: 20;
+}
 </style>
 </head>
 <body>
@@ -250,18 +262,7 @@ body.mobile #clickOverlay {
 
 <audio id="audioEl" preload="metadata"></audio>
 
-<!-- SITE VIEWS COUNTER TOP RIGHT -->
-<div id="viewsCounter" style="
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  font-family: 'CfCheerio', Arial, sans-serif;
-  color: #8ed0f0;
-  text-shadow: 0 0 5px #8ed0f0;
-  font-size: 12px;
-  z-index: 20;">
-  Site Views: 0
-</div>
+<div id="viewsCounter">Site Views: 0</div>
 
 <script>
 // DEVICE DETECTION
@@ -308,8 +309,8 @@ function formatTime(t){
 
 // DISPLAY CLEAN TITLE
 function displayTitle(filename){
-  let title = filename.replace(/\.mp3$/i,'');        // remove .mp3
-  title = title.replace(/\s*\(.*?\)/g,'');           // remove parentheses and contents
+  let title = filename.replace(/\.mp3$/i,'');
+  title = title.replace(/\s*\(.*?\)/g,'');
   return title.trim();
 }
 
@@ -340,7 +341,7 @@ function prevSong(){ loadSong(index-1); audio.play(); isPlaying=true; playPauseB
 function nextSong(){ loadSong(index+1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
 
 // UPDATE TIME AND PROGRESS
-audio.addEventListener('timeupdate', ()=>{ 
+audio.addEventListener('timeupdate', ()=>{
   currentTimeEl.textContent = formatTime(audio.currentTime);
   progress.value = Math.floor(audio.currentTime);
 });
@@ -376,8 +377,8 @@ clickOverlay.addEventListener('click', ()=>{
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
 
-// SITE VIEWS COUNTER TOP RIGHT
-fetch('https://api.countapi.xyz/hit/sujaylmao.github.io/views')
+// SITE VIEWS COUNTER USING ABACUS
+fetch('https://abacus.jasoncameron.dev/hit/sujaylmao.github.io/views')
   .then(res => res.json())
   .then(data => {
     document.getElementById('viewsCounter').textContent = `Site Views: ${data.value}`;
