@@ -242,12 +242,26 @@ body.mobile #clickOverlay {
 </div>
 
 <div class="socials">
-  <a class="social" href="https://www.youtube.com/@sujaylmao" target="_blank"><img src="https://img.icons8.com/color/96/youtube-play.png"></a>
-  <a class="social" href="https://www.tiktok.com/@sujaylmao" target="_blank"><img src="https://img.icons8.com/color/96/tiktok.png"></a>
-  <a class="social" href="https://discord.com/users/your-discord-id" target="_blank"><img src="https://img.icons8.com/color/96/discord-logo.png"></a>
+  <a class="social" href="https://www.youtube.com/@sujaylmao" target="_blank"><img src="https://img.icons8.com/color/96/youtube-play.png" alt="YouTube"></a>
+  <a class="social" href="https://www.tiktok.com/@sujaylmao" target="_blank"><img src="https://img.icons8.com/color/96/tiktok.png" alt="TikTok"></a>
+  <a class="social" href="https://discord.com/users/your-discord-id" target="_blank"><img src="https://img.icons8.com/color/96/discord-logo.png" alt="Discord"></a>
+  <a class="social" href="https://www.roblox.com/users/1894612427/profile" target="_blank"><img src="https://img.icons8.com/color/96/roblox.png" alt="Roblox"></a>
 </div>
 
 <audio id="audioEl" preload="metadata"></audio>
+
+<!-- SITE VIEWS COUNTER TOP RIGHT -->
+<div id="viewsCounter" style="
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-family: 'CfCheerio', Arial, sans-serif;
+  color: #8ed0f0;
+  text-shadow: 0 0 5px #8ed0f0;
+  font-size: 12px;
+  z-index: 20;">
+  Site Views: 0
+</div>
 
 <script>
 // DEVICE DETECTION
@@ -326,7 +340,7 @@ function prevSong(){ loadSong(index-1); audio.play(); isPlaying=true; playPauseB
 function nextSong(){ loadSong(index+1); audio.play(); isPlaying=true; playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png"; }
 
 // UPDATE TIME AND PROGRESS
-audio.addEventListener('timeupdate', ()=>{
+audio.addEventListener('timeupdate', ()=>{ 
   currentTimeEl.textContent = formatTime(audio.currentTime);
   progress.value = Math.floor(audio.currentTime);
 });
@@ -361,6 +375,14 @@ clickOverlay.addEventListener('click', ()=>{
   isPlaying = true;
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
+
+// SITE VIEWS COUNTER TOP RIGHT
+fetch('https://api.countapi.xyz/hit/sujaylmao.github.io/views')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('viewsCounter').textContent = `Site Views: ${data.value}`;
+  })
+  .catch(err => console.error('Views counter error:', err));
 </script>
 
 </body>
