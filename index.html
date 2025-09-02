@@ -376,16 +376,35 @@ clickOverlay.addEventListener('click', ()=>{
   playPauseBtn.querySelector('img').src="https://img.icons8.com/ios-filled/50/ffffff/pause.png";
 });
 
-// SITE VIEWS COUNTER (IP-BASED UNIQUE)
+// MINIMAL VIEWS COUNTER WITH GOOGLE SHEET
 const viewsNumber = document.getElementById('viewsNumber');
-// Replace with your backend URL
-const backendURL = 'http://YOUR_SERVER_IP:3000/views';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbywKWXA5YMysuxAt8645R2NlLJb1JoeEc9pHSelXCwkQSWkaNiL9_dMy7b0BK_LoHjD/exec';
 
-fetch(backendURL)
+// Get visitor IP and update views
+fetch('https://ipapi.co/json/')
   .then(res => res.json())
-  .then(data => { viewsNumber.textContent = data.views; })
-  .catch(err => console.error('Views counter error:', err));
+  .then(data => {
+    const ip = data.ip;
 
+    // Fetch current total views
+    fetch(scriptURL)
+      .then(r => r.json())
+      .then(totalData => {
+        viewsNumber.textContent = totalData.total || 0;
+      });
+
+    // Send IP to Google Script to check/add
+    fetch(scriptURL + '?ip=' + ip)
+      .then(r => r.text())
+      .then(resp => {
+        console.log(resp);
+        if(resp === "New view"){
+          let current = parseInt(viewsNumber.textContent) || 0;
+          viewsNumber.textContent = current + 1;
+        }
+      });
+  })
+  .catch(err => console.error('Views counter error:', err));
 </script>
 </body>
 </html>
